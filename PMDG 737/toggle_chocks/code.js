@@ -35,6 +35,8 @@ const commandList = [
   },
 ];
 
+const getWheelChockState = () => this.$api.variables.get("L:NGXWheelChocks", "number");
+
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -56,4 +58,8 @@ run(() => {
   })();
 
   return false;
+});
+
+style(() => {
+  return getWheelChockState() ? "active" : null;
 });
