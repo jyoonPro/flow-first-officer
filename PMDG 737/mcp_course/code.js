@@ -80,7 +80,7 @@ search(["course", "crs"], (query, callback) => {
 
   if (spl.length > 0) {
     let targetCourse;
-    if (!spl[1] || spl[1].length === 0 || !Number.isFinite(Number(spl[1]))) targetCourse = getTrueHeading();
+    if (!spl[1] || spl[1].length === 0 || !Number.isFinite(Number(spl[1]))) targetCourse = getLeftMcpCourse();
     else targetCourse = Number(spl[1]);
     targetCourse = Math.round(targetCourse % 360);
 
@@ -93,8 +93,8 @@ search(["course", "crs"], (query, callback) => {
         (async () => {
           await setMcpHeading(targetCourse, true);
           await setMcpHeading(targetCourse, false);
+          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
-        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
       },
     };
 

@@ -88,8 +88,10 @@ search(["heading", "hdg"], (query, callback) => {
       subtext: "Set MCP heading to " + targetHeading,
       is_note: true,
       execute: () => {
-        setMcpHeading(targetHeading);
-        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
+        (async () => {
+          await setMcpHeading(targetHeading);
+          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
+        })();
       },
     };
 
