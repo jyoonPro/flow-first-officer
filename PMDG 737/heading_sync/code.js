@@ -33,7 +33,7 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const setMcpHeading = async targetHeading => {
+const setMcpHeading = async (targetHeading, retry) => {
   const mcpHeading = getMcpHeading();
   const angleDifference = getSignedAngleDifference(mcpHeading, targetHeading);
 
@@ -65,11 +65,11 @@ const setMcpHeading = async targetHeading => {
 
   // In case of frame/instruction drops
   await timeout(200);
-  if (getMcpHeading() !== targetHeading) setMcpHeading(targetHeading);
+  if (getMcpHeading() !== targetHeading && retry > 0) setMcpHeading(targetHeading, retry - 1);
 }
 
 run(() => {
-  setMcpHeading(getTrueHeading())
+  setMcpHeading(getTrueHeading(), 3)
   return false;
 });
 
@@ -106,7 +106,7 @@ search(["heading", "hdg"], (query, callback) => {
       is_note: true,
       execute: () => {
         (async () => {
-          await setMcpHeading(targetHeading);
+          await setMcpHeading(targetHeading, 3);
           this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
       },

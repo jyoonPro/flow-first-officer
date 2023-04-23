@@ -31,7 +31,7 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const setMcpCourse = async (targetCourse, isLeft) => {
+const setMcpCourse = async (targetCourse, isLeft, retry) => {
   const mcpCourse = isLeft ? getLeftMcpCourse() : getRightMcpCourse();
   const angleDifference = getSignedAngleDifference(mcpCourse, targetCourse);
 
@@ -63,12 +63,12 @@ const setMcpCourse = async (targetCourse, isLeft) => {
 
   // In case of frame/instruction drops
   await timeout(200);
-  if (isLeft && getLeftMcpCourse() !== targetCourse || !isLeft && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse);
+  if (isLeft && getLeftMcpCourse() !== targetCourse || !isLeft && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse, isLeft, retry - 1);
 }
 
 run(() => {
   (async () => {
-    await setMcpCourse(getLeftMcpCourse(), false);
+    await setMcpCourse(getLeftMcpCourse(), false, 3);
   })();
   return false;
 });
@@ -99,8 +99,8 @@ search(["course", "crs"], (query, callback) => {
       is_note: true,
       execute: () => {
         (async () => {
-          await setMcpCourse(targetCourse, true);
-          await setMcpCourse(targetCourse, false);
+          await setMcpCourse(targetCourse, true, 3);
+          await setMcpCourse(targetCourse, false, 3);
           this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
       },
