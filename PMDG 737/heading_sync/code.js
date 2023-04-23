@@ -1,3 +1,5 @@
+let isUserScrolling, scrollIdleTimeout;
+
 // Account for PMDG knob acceleration
 function getStepCount(target) {
   let normalStep, extraStep;
@@ -39,27 +41,31 @@ const setMcpHeading = async targetHeading => {
     const {normalStep, extraStep} = getStepCount(-angleDifference);
 
     for (let i = 0; i < normalStep; i++) {
-      await timeout(10);
-      this.$api.variables.set("K:HEADING_BUG_INC", "degrees", 0);
+      await timeout(50);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", 39007);
     }
 
     for (let i = 0; i < extraStep; i++) {
       await timeout(200);
-      this.$api.variables.set("K:HEADING_BUG_INC", "degrees", 0);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", 39007);
     }
   } else if (angleDifference > 0) {
     const {normalStep, extraStep} = getStepCount(angleDifference);
 
     for (let i = 0; i < normalStep; i++) {
-      await timeout(10);
-      this.$api.variables.set("K:HEADING_BUG_DEC", "degrees", 0);
+      await timeout(50);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", 39008);
     }
 
     for (let i = 0; i < extraStep; i++) {
       await timeout(200);
-      this.$api.variables.set("K:HEADING_BUG_DEC", "degrees", 0);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", 39008);
     }
   }
+
+  // In case of frame/instruction drops
+  await timeout(200);
+  if (getMcpHeading() !== targetHeading) setMcpHeading(targetHeading);
 }
 
 run(() => {
@@ -67,8 +73,19 @@ run(() => {
   return false;
 });
 
-state(() => {
-  return 'HDG<br/>' + getTrueHeading();
+scroll(cfg => {
+  clearTimeout(scrollIdleTimeout);
+  isUserScrolling = true;
+
+  if (cfg.scroll > 0) {
+    this.$api.variables.set("K:ROTOR_BRAKE", "number", 39008);
+  } else {
+    this.$api.variables.set("K:ROTOR_BRAKE", "number", 39007);
+  }
+
+  scrollIdleTimeout = setTimeout(() => {
+    isUserScrolling = false;
+  }, 1500);
 });
 
 search(["heading", "hdg"], (query, callback) => {
@@ -97,4 +114,8 @@ search(["heading", "hdg"], (query, callback) => {
 
     callback([result]);
   }
+});
+
+state(() => {
+  return isUserScrolling ? "SEL<br/>" + getMcpHeading() : "HDG<br/>" + getTrueHeading();
 });

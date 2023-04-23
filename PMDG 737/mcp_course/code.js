@@ -31,15 +31,15 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const setMcpHeading = async (targetHeading, isLeft) => {
+const setMcpCourse = async (targetCourse, isLeft) => {
   const mcpCourse = isLeft ? getLeftMcpCourse() : getRightMcpCourse();
-  const angleDifference = getSignedAngleDifference(mcpCourse, targetHeading);
+  const angleDifference = getSignedAngleDifference(mcpCourse, targetCourse);
 
   if (angleDifference < 0) {
     const {normalStep, extraStep} = getStepCount(-angleDifference);
 
     for (let i = 0; i < normalStep; i++) {
-      await timeout(10);
+      await timeout(50);
       this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37607 : 40907);
     }
 
@@ -51,7 +51,7 @@ const setMcpHeading = async (targetHeading, isLeft) => {
     const {normalStep, extraStep} = getStepCount(angleDifference);
 
     for (let i = 0; i < normalStep; i++) {
-      await timeout(10);
+      await timeout(50);
       this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37608 : 40908);
     }
 
@@ -60,17 +60,25 @@ const setMcpHeading = async (targetHeading, isLeft) => {
       this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37608 : 40908);
     }
   }
+
+  // In case of frame/instruction drops
+  await timeout(200);
+  if (isLeft && getLeftMcpCourse() !== targetCourse || !isLeft && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse);
 }
 
 run(() => {
   (async () => {
-    await setMcpHeading(getLeftMcpCourse(), false);
+    await setMcpCourse(getLeftMcpCourse(), false);
   })();
   return false;
 });
 
-state(() => {
-  return 'CRS<br/>' + getLeftMcpCourse();
+scroll(cfg => {
+  if (cfg.scroll > 0) {
+    this.$api.variables.set("K:ROTOR_BRAKE", "number", 37608);
+  } else {
+    this.$api.variables.set("K:ROTOR_BRAKE", "number", 37607);
+  }
 });
 
 search(["course", "crs"], (query, callback) => {
@@ -91,8 +99,8 @@ search(["course", "crs"], (query, callback) => {
       is_note: true,
       execute: () => {
         (async () => {
-          await setMcpHeading(targetCourse, true);
-          await setMcpHeading(targetCourse, false);
+          await setMcpCourse(targetCourse, true);
+          await setMcpCourse(targetCourse, false);
           this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
       },
@@ -100,4 +108,8 @@ search(["course", "crs"], (query, callback) => {
 
     callback([result]);
   }
+});
+
+state(() => {
+  return "CRS<br/>" + getLeftMcpCourse();
 });
