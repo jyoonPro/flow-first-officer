@@ -1,6 +1,7 @@
 this.store = {
   enable_speedbrake: false,
   enable_flaps: false,
+  stop_timer: true,
   delay: "450",
 };
 
@@ -25,6 +26,15 @@ settings_define({
       this.$api.datastore.export(this.store);
     },
   },
+  stop_timer: {
+    type: "checkbox",
+    label: "Stop Elapsed Timer",
+    value: this.store.stop_timer,
+    changed: value => {
+      this.store.stop_timer = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
   delay: {
     type: "text",
     label: "Delay between actions in milliseconds",
@@ -46,7 +56,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: 1500,
+    delay: () => 1500,
     enabled: () => this.store.enable_speedbrake,
   },
   // Flaps Up
@@ -58,7 +68,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: 5500,
+    delay: () => 5500,
     enabled: () => this.store.enable_flaps,
   },
   // Transponder Off
@@ -70,7 +80,7 @@ const commandList = [
     incr: 80001,
     decr: 80002,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Position Steady
@@ -82,7 +92,7 @@ const commandList = [
     incr: 12302,
     decr: 12301,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Landing Lights Off
@@ -94,7 +104,7 @@ const commandList = [
     incr: 11102,
     decr: 11101,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -105,7 +115,7 @@ const commandList = [
     incr: 11202,
     decr: 11201,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -116,7 +126,7 @@ const commandList = [
     incr: 11302,
     decr: 11301,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -127,7 +137,7 @@ const commandList = [
     incr: 11402,
     decr: 11401,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Runway Turnoff Lights Off
@@ -139,7 +149,7 @@ const commandList = [
     incr: 11502,
     decr: 11501,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -150,7 +160,7 @@ const commandList = [
     incr: 11602,
     decr: 11601,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Taxi Lights On
@@ -162,7 +172,7 @@ const commandList = [
     incr: 11702,
     decr: 11701,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // APU On
@@ -174,7 +184,7 @@ const commandList = [
     incr: 11802,
     decr: 11801,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Probe Heat Off
@@ -186,7 +196,7 @@ const commandList = [
     incr: 14002,
     decr: 14001,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -197,7 +207,7 @@ const commandList = [
     incr: 14102,
     decr: 14101,
     interval_delay: 0,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Engine Start Switches Off/Auto
@@ -209,7 +219,7 @@ const commandList = [
     incr: 11901,
     decr: 11902,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   {
@@ -220,7 +230,7 @@ const commandList = [
     incr: 12101,
     decr: 12102,
     interval_delay: 100,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
   },
   // Auto Brake Off
@@ -232,8 +242,31 @@ const commandList = [
     incr: 46001,
     decr: 46002,
     interval_delay: 300,
-    delay: 0,
+    delay: () => 0,
     enabled: () => true,
+  },
+  // Stop Elaped Timer
+  {
+    var: "L:switch_321_73X",
+    desired_pos: () => 100,
+    step: 100,
+    action: 32101,
+    incr: null,
+    decr: null,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => this.store.stop_timer,
+  },
+  {
+    var: "L:switch_530_73X",
+    desired_pos: () => 100,
+    step: 100,
+    action: 53001,
+    incr: null,
+    decr: null,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => this.store.stop_timer,
   },
 ];
 
@@ -257,7 +290,7 @@ run(() => {
         for (let i = 1; i <= repeatCount; i++) {
           this.$api.variables.set("K:ROTOR_BRAKE", "number", action);
 
-          let delay = command.delay;
+          let delay = command.delay();
           if (i < repeatCount && command.interval_delay > 0) {
             delay = command.interval_delay;
           } else if (Number(this.store.delay) > 0) {
