@@ -21,9 +21,11 @@ function getStepCount(target) {
 
 const getSpeed = () => {
   const rawValue = this.$api.variables.get("L:ngx_SPDwindow", "number");
-  if (rawValue < 1) {
+  if (rawValue <= 0) {
+    return 0;
+  } else if (rawValue < 1) {
     // Mach
-    return Math.round(rawValue * 100) / 100
+    return Math.round(rawValue * 100) / 100;
   } else {
     return Math.round(rawValue);
   }
@@ -121,5 +123,5 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 });
 
 state(() => {
-  return isMach() ? "MACH<br/>" + getSpeed().toFixed(2) : "IAS<br/>" + getSpeed();
+  return isMach() ? "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") : "IAS<br/>" + getSpeed();
 });
