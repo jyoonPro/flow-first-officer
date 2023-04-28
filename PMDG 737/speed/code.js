@@ -31,7 +31,11 @@ const getSpeed = () => {
   }
 }
 
-const isMach = () => this.$api.variables.get("L:ngx_SPDwindow", "number") < 1;
+const isMach = () => {
+  // Altitude above FL260 OR speed window indicates value under 1
+  return this.$api.variables.get("A:PLANE ALTITUDE", "number") > 26000 ||
+         this.$api.variables.get("L:ngx_SPDwindow", "number") < 1;
+}
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -123,5 +127,5 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 });
 
 state(() => {
-  return isMach() ? "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") : "IAS<br/>" + getSpeed();
+  return isMach() ? "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") : "IAS<br/>" + (getSpeed() || "---");
 });
