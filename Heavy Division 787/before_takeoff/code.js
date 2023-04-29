@@ -1,5 +1,6 @@
 this.store = {
-	enable_seatbelt: false,
+  enable_seatbelt: false,
+  takeoff_taxi_lights: false,
 	tcas_ta_only: false,
 	delay: "450",
 };
@@ -15,7 +16,16 @@ settings_define({
 			this.store.enable_seatbelt = value;
 			this.$api.datastore.export(this.store);
 		},
-	},
+  },
+  takeoff_taxi_lights: {
+    type: "checkbox",
+    label: "Taxi lights ON during takeoff",
+    value: this.store.takeoff_taxi_lights,
+    changed: value => {
+      this.store.takeoff_taxi_lights = value;
+      this.$api.datastore.export(this.store);
+      },
+  },
 	tcas_ta_only: {
 		type: "checkbox",
 		label: "Set TCAS to TA Only",
@@ -86,7 +96,7 @@ const commandList = [
 	{
 		var: "L:LIGHTING_TAXI_1",
 		action: () => "B:LIGHTING_TAXI_1_SET",
-		desired_pos: () => 0,
+    desired_pos: () => this.store.takeoff_taxi_lights ? 1 : 0,
 		delay: 0,
 		enabled: () => true,
 	},

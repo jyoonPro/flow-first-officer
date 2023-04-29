@@ -1,6 +1,7 @@
 this.store = {
 	enable_spoilers: false,
-	enable_flaps: false,
+  enable_flaps: false,
+  stop_timer: true,
 	delay: "450",
 };
 
@@ -24,7 +25,16 @@ settings_define({
 			this.store.enable_spoilers = value;
 			this.$api.datastore.export(this.store);
 		},
-	},
+  },
+  stop_timer: {
+    type: "checkbox",
+    label: "Stop Elapsed Timer",
+    value: this.store.stop_timer,
+    changed: value => {
+      this.store.stop_timer = value;
+      this.$api.datastore.export(this.store);
+      },
+  },
 	delay: {
 		type: "text",
 		label: "Delay between actions in milliseconds",
@@ -138,6 +148,21 @@ const commandList = [
 		delay: 0,
 		enabled: () => true,
 	},
+  // Stop Elapsed Timer
+  {
+    var: "L:__CPT_CLOCK_RUNIsPressed",
+    action: "L:A310_ET_TOGGLE_BUTTON",
+    desired_pos: () => 1,
+    delay: 0,
+    enabled: () => this.store.stop_timer,
+  },
+  {
+    var: "L:__FO_CLOCK_RUNIsPressed",
+    action: "L:A310_ET_TOGGLE_BUTTON_FO",
+    desired_pos: () => 1,
+    delay: 0,
+    enabled: () => this.store.stop_timer,
+  },
 ];
 
 function timeout(ms) {
@@ -151,7 +176,7 @@ run(event => {
 
 			const state = this.$api.variables.get(command.var, "number");
 			if (state !== command.desired_pos()) {
-				this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
+				this.$api.variables.set(command.action || command.var, "number", command.desired_pos(true));
 
 				let delay = command.delay;
 				if (Number(this.store.delay) > 0) {

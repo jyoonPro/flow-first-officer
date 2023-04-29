@@ -1,5 +1,6 @@
 this.store = {
 	enable_seatbelt: false,
+	start_timer: true,
 	tcas_ta_only: false,
 	delay: "450",
 };
@@ -15,6 +16,15 @@ settings_define({
 			this.store.enable_seatbelt = value;
 			this.$api.datastore.export(this.store);
 		},
+	},
+	start_timer: {
+		type: "checkbox",
+		label: "Reset & Start Elapsed Timer",
+		value: this.store.start_timer,
+		changed: value => {
+			this.store.start_timer = value;
+			this.$api.datastore.export(this.store);
+			},
 	},
 	tcas_ta_only: {
 		type: "checkbox",
@@ -119,6 +129,21 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: 0,
 		enabled: () => true,
+	},
+	// Start Elapsed Timer
+  {
+    var: "L:A32NX_CHRONO_ET_SWITCH_POS",
+    action: null,
+    desired_pos: () => 2,
+    delay: 1000,
+    enabled: () => this.store.start_timer,
+  },
+	{
+		var: "L:A32NX_CHRONO_ET_SWITCH_POS",
+		action: null,
+		desired_pos: () => 0,
+		delay: 0,
+		enabled: () => this.store.start_timer,
 	},
 ];
 

@@ -1,5 +1,6 @@
 this.store = {
-	enable_seatbelt: false,
+  enable_seatbelt: false,
+  start_timer: true,
 	tcas_ta_only: false,
 	delay: "450",
 };
@@ -15,7 +16,16 @@ settings_define({
 			this.store.enable_seatbelt = value;
 			this.$api.datastore.export(this.store);
 		},
-	},
+  },
+  start_timer: {
+    type: "checkbox",
+    label: "Reset & Start Elapsed Timer",
+    value: this.store.start_timer,
+    changed: value => {
+      this.store.start_timer = value;
+      this.$api.datastore.export(this.store);
+      },
+  },
 	tcas_ta_only: {
 		type: "checkbox",
 		label: "Set TCAS to TA Only",
@@ -106,6 +116,21 @@ const commandList = [
 		delay: 0,
 		enabled: () => true,
 	},
+  // Start Elapsed Timer
+  {
+    var: "L:__CPT_CLOCK_RUNIsPressed",
+    action: "L:A310_ET_TOGGLE_BUTTON",
+    desired_pos: (isAction) => isAction ? 1 : 0,
+    delay: 0,
+    enabled: () => this.store.start_timer,
+  },
+  {
+    var: "L:__FO_CLOCK_RUNIsPressed",
+    action: "L:A310_ET_TOGGLE_BUTTON_FO",
+    desired_pos: (isAction) => isAction ? 1 : 0,
+    delay: 0,
+    enabled: () => this.store.start_timer,
+  },
 ];
 
 function timeout(ms) {
@@ -119,7 +144,7 @@ run(event => {
 
 			const state = this.$api.variables.get(command.var, "number");
 			if (state !== command.desired_pos()) {
-				this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
+				this.$api.variables.set(command.action || command.var, "number", command.desired_pos(true));
 				
 				let delay = command.delay;
 				if (Number(this.store.delay) > 0) {
