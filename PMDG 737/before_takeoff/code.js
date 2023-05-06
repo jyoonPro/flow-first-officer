@@ -9,17 +9,7 @@ this.store = {
 
 this.$api.datastore.import(this.store);
 
-const isDark = () => {
-  const time = this.$api.time.get_sim_time_local();
-  const declination = this.$api.time.get_sun_position().declination;
-  const latitude = this.$api.variables.get("A:PLANE LATITUDE", "radians");
-
-  const sunrise = 12 - (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
-  const sunset = 12 + (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
-
-  const hours = time.getUTCHours() + time.getUTCMinutes() / 60 + time.getUTCSeconds() / 3600;
-  return hours < sunrise + 0.5 || hours > sunset - 0.5;
-}
+const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
 settings_define({
   enable_seatbelt: {
