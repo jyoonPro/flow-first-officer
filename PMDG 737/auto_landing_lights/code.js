@@ -1,7 +1,7 @@
 this.store = {
-  off_altitude: "9000",
-  on_altitude: "11000",
-  delay: "450",
+  off_altitude: 9000,
+  on_altitude: 11000,
+  delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -11,27 +11,36 @@ settings_define({
     type: "text",
     label: "Lights off altitude (feet)",
     value: this.store.off_altitude,
-    changed: (value) => {
-      this.store.off_altitude = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const altitude = Number(value);
+      if (Number.isInteger(altitude) && altitude >= 0) {
+        this.store.off_altitude = altitude;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
   on_altitude: {
     type: "text",
     label: "Lights on altitude (feet)",
     value: this.store.on_altitude,
-    changed: (value) => {
-      this.store.on_altitude = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const altitude = Number(value);
+      if (Number.isInteger(altitude) && altitude >= 0) {
+        this.store.on_altitude = altitude;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
   delay: {
     type: "text",
-    label: "Delay between actions in milliseconds",
+    label: "Delay between actions (ms)",
     value: this.store.delay,
-    changed: (value) => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -66,7 +75,7 @@ const commandList = [
     incr: 11102,
     decr: 11101,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -77,7 +86,7 @@ const commandList = [
     incr: 11202,
     decr: 11201,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -88,7 +97,7 @@ const commandList = [
     incr: 11302,
     decr: 11301,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -99,7 +108,7 @@ const commandList = [
     incr: 11402,
     decr: 11401,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Runway Turnoff Lights
@@ -111,7 +120,7 @@ const commandList = [
     incr: 11502,
     decr: 11501,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -122,7 +131,7 @@ const commandList = [
     incr: 11602,
     decr: 11601,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Taxi Lights
@@ -134,7 +143,7 @@ const commandList = [
     incr: 11702,
     decr: 11701,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Logo Lights
@@ -146,7 +155,7 @@ const commandList = [
     incr: 12202,
     decr: 12201,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => isDark(),
   },
   // Wing Lights
@@ -158,7 +167,7 @@ const commandList = [
     incr: 12502,
     decr: 12501,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => isDark(),
   },
   // Engine
@@ -170,7 +179,7 @@ const commandList = [
     incr: 11901,
     decr: 11902,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -181,7 +190,7 @@ const commandList = [
     incr: 12101,
     decr: 12102,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
 ];
@@ -219,8 +228,6 @@ loop_1hz(() => {
           let delay = command.delay();
           if (i < repeatCount && command.interval_delay > 0) {
             delay = command.interval_delay;
-          } else if (Number(this.store.delay) > 0) {
-            delay += Number(this.store.delay) || 450;
           }
 
           if (delay > 0) {

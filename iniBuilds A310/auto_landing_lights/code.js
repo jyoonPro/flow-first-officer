@@ -1,7 +1,7 @@
 this.store = {
-  off_altitude: "9000",
-  on_altitude: "11000",
-  delay: "450",
+  off_altitude: 9000,
+  on_altitude: 11000,
+  delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -11,27 +11,36 @@ settings_define({
     type: "text",
     label: "Lights off altitude (feet)",
     value: this.store.off_altitude,
-    changed: (value) => {
-      this.store.off_altitude = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const altitude = Number(value);
+      if (Number.isInteger(altitude) && altitude >= 0) {
+        this.store.off_altitude = altitude;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
   on_altitude: {
     type: "text",
     label: "Lights on altitude (feet)",
     value: this.store.on_altitude,
-    changed: (value) => {
-      this.store.on_altitude = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const altitude = Number(value);
+      if (Number.isInteger(altitude) && altitude >= 0) {
+        this.store.on_altitude = altitude;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
   delay: {
     type: "text",
-    label: "Delay between actions in milliseconds",
+    label: "Delay between actions (ms)",
     value: this.store.delay,
-    changed: (value) => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -82,11 +91,7 @@ loop_1hz(() => {
       if (state !== command.desired_pos()) {
         this.$api.variables.set(command.action || command.var, "number", command.desired_pos(true));
 
-        let delay = command.delay;
-        if (Number(this.store.delay) > 0) {
-          delay += Number(this.store.delay) || 450;
-        }
-
+        const delay = command.delay();
         if (delay > 0) {
           await timeout(delay);
         }

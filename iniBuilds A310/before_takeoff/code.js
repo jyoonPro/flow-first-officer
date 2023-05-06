@@ -2,17 +2,19 @@ this.store = {
   enable_seatbelt: false,
   start_timer: true,
 	tcas_ta_only: false,
-	delay: "450",
+	delay: 450,
 };
 
 this.$api.datastore.import(this.store);
+
+const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
 settings_define({
 	enable_seatbelt: {
 		type: "checkbox",
 		label: "Enable seatbelt signs check",
 		value: this.store.enable_seatbelt,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_seatbelt = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -37,11 +39,14 @@ settings_define({
 	},
 	delay: {
 		type: "text",
-		label: "Delay between actions in milliseconds",
+		label: "Delay between actions (ms)",
 		value: this.store.delay,
-		changed: (value) => {
-			this.store.delay = value;
-			this.$api.datastore.export(this.store);
+		changed: value => {
+			const delay = Number(value);
+			if (Number.isInteger(delay) && delay >= 0) {
+				this.store.delay = delay;
+				this.$api.datastore.export(this.store);
+			}
 		},
 	},
 });
@@ -52,14 +57,14 @@ const commandList = [
 		var: "L:A310_SEATBELTS_SWITCH",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => this.store.enable_seatbelt,
 	},
 	{
 		var: "L:A310_NO_SMOKING_SWITCH",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => this.store.enable_seatbelt,
 	},
 	// Weather Radar On
@@ -67,7 +72,7 @@ const commandList = [
 		var: "L:A310_WXR_SYS",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Landing Lights On
@@ -75,14 +80,14 @@ const commandList = [
 		var: "L:A310_LANDING_LIGHT_R_SWITCH",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:A310_LANDING_LIGHT_L_SWITCH",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Nose Light TO
@@ -90,7 +95,7 @@ const commandList = [
 		var: "L:A310_TAXI_LIGHTS_SWITCH",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Runway Turnoff Lights On
@@ -98,14 +103,14 @@ const commandList = [
 		var: "L:A310_RWY_TURNOFF_L_SWITCH",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay0,
 		enabled: () => true,
 	},
 	{
 		var: "L:A310_RWY_TURNOFF_R_SWITCH",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// TCAS TA/RA
@@ -113,7 +118,7 @@ const commandList = [
 		var: "L:A310_TCAS_MODE_PEDESTAL",
 		action: null,
 		desired_pos: () => this.store.tcas_ta_only ? 3 : 2,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
   // Start Elapsed Timer
@@ -121,20 +126,20 @@ const commandList = [
     var: "L:__CPT_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON",
     desired_pos: (isAction) => isAction ? 1 : 0,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
   {
     var: "L:__FO_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON_FO",
     desired_pos: (isAction) => isAction ? 1 : 0,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
 ];
 
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 run(event => {
@@ -146,11 +151,7 @@ run(event => {
 			if (state !== command.desired_pos()) {
 				this.$api.variables.set(command.action || command.var, "number", command.desired_pos(true));
 
-				let delay = command.delay;
-				if (Number(this.store.delay) > 0) {
-					delay += Number(this.store.delay) || 450;
-				}
-
+				const delay = command.delay();
 				if (delay > 0) {
 					await timeout(delay);
 				}
@@ -158,6 +159,6 @@ run(event => {
 		}
 	})();
 
-	this.$api.command.script_message_send("310-auto-ll", "", (callback) => {});
+	this.$api.command.script_message_send("a310-auto-ll", "", (callback) => {});
 	return false;
 });

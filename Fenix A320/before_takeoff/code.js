@@ -2,17 +2,19 @@ this.store = {
   enable_seatbelt: false,
   start_timer: true,
   tcas_ta_only: false,
-  delay: "450",
+  delay: 450,
 };
 
 this.$api.datastore.import(this.store);
+
+const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
 settings_define({
   enable_seatbelt: {
     type: "checkbox",
     label: "Enable seatbelt signs check",
     value: this.store.enable_seatbelt,
-    changed: (value) => {
+    changed: value => {
       this.store.enable_seatbelt = value;
       this.$api.datastore.export(this.store);
     },
@@ -37,11 +39,14 @@ settings_define({
   },
   delay: {
     type: "text",
-    label: "Delay between actions in milliseconds",
+    label: "Delay between actions (ms)",
     value: this.store.delay,
-    changed: (value) => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -52,14 +57,14 @@ const commandList = [
     var: "L:S_OH_SIGNS",
     action: null,
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
   },
   {
     var: "L:S_OH_SIGNS_SMOKING",
     action: null,
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
   },
   // TCAS TA/RA
@@ -67,14 +72,14 @@ const commandList = [
     var: "L:S_XPDR_OPERATION",
     action: null,
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
     var: "L:S_XPDR_MODE",
     action: null,
     desired_pos: () => this.store.tcas_ta_only ? 1 : 2,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Weather Radar On
@@ -82,14 +87,14 @@ const commandList = [
     var: "L:S_WR_SYS",
     action: null,
     desired_pos: () => 0,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
     var: "L:S_WR_PRED_WS",
     action: null,
     desired_pos: () => 2,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Landing Lights On
@@ -97,14 +102,14 @@ const commandList = [
     var: "L:S_OH_EXT_LT_LANDING_L",
     action: null,
     desired_pos: () => 2,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
     var: "L:S_OH_EXT_LT_LANDING_R",
     action: null,
     desired_pos: () => 2,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Nose Light TO
@@ -112,7 +117,7 @@ const commandList = [
     var: "L:S_OH_EXT_LT_NOSE",
     action: null,
     desired_pos: () => 2,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Runway Turnoff Lights On
@@ -120,7 +125,7 @@ const commandList = [
     var: "L:S_OH_EXT_LT_RWY_TURNOFF",
     action: null,
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Start Elapsed Timer
@@ -128,14 +133,14 @@ const commandList = [
     var: "L:S_MIP_CLOCK_ET",
     action: null,
     desired_pos: () => 2,
-    delay: 1000,
+    delay: () => this.store.delay + 1000,
     enabled: () => this.store.start_timer,
   },
   {
     var: "L:S_MIP_CLOCK_ET",
     action: null,
     desired_pos: () => 0,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
 ];
@@ -153,11 +158,7 @@ run(event => {
       if (state !== command.desired_pos()) {
         this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
 
-        let delay = command.delay;
-        if (Number(this.store.delay) > 0) {
-          delay += Number(this.store.delay) || 450;
-        }
-
+        const delay = command.delay();
         if (delay > 0) {
           await timeout(delay);
         }
@@ -165,6 +166,6 @@ run(event => {
     }
   })();
 
-  this.$api.command.script_message_send("320-fenix-auto-ll", "", (callback) => {});
+  this.$api.command.script_message_send("a320-fenix-auto-ll", "", (callback) => {});
   return false;
 });

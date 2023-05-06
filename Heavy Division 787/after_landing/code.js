@@ -11,7 +11,7 @@ settings_define({
 		type: "checkbox",
 		label: "Enable flaps retraction",
 		value: this.store.enable_flaps,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_flaps = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -20,7 +20,7 @@ settings_define({
 		type: "checkbox",
 		label: "Enable speedbrake retraction",
 		value: this.store.enable_speedbrake,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_speedbrake = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -29,7 +29,7 @@ settings_define({
 		type: "text",
 		label: "Delay between actions in milliseconds",
 		value: this.store.delay,
-		changed: (value) => {
+		changed: value => {
 			this.store.delay = value;
 			this.$api.datastore.export(this.store);
 		},

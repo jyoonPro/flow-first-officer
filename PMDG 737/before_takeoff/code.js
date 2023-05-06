@@ -4,7 +4,7 @@ this.store = {
   wing_lights: false,
   start_timer: true,
   tcas_ta_only: false,
-  delay: "450",
+  delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -62,8 +62,11 @@ settings_define({
     label: "Delay between actions (ms)",
     value: this.store.delay,
     changed: value => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -78,7 +81,7 @@ const commandList = [
     incr: 38002,
     decr: 38001,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Reset Fuel Flow
@@ -90,7 +93,7 @@ const commandList = [
     incr: 46802,
     decr: 46801,
     interval_delay: 0,
-    delay: () => 100 - this.store.delay,
+    delay: () => 200,
     enabled: () => true,
   },
   {
@@ -101,7 +104,7 @@ const commandList = [
     incr: 46805,
     decr: 46804,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Seatbelt & Smoke Signs
@@ -113,7 +116,7 @@ const commandList = [
     incr: 10302,
     decr: 10301,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
   },
   {
@@ -124,7 +127,7 @@ const commandList = [
     incr: 10402,
     decr: 10401,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
   },
   // Logo Lights
@@ -136,7 +139,7 @@ const commandList = [
     incr: 12202,
     decr: 12201,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => isDark(),
   },
   // Position Strobe & Steady
@@ -148,7 +151,7 @@ const commandList = [
     incr: 12302,
     decr: 12301,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Wing Lights
@@ -160,7 +163,7 @@ const commandList = [
     incr: 12502,
     decr: 12501,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.wing_lights || isDark(),
   },
   // Wheel Well Lights Off
@@ -172,7 +175,7 @@ const commandList = [
     incr: 12602,
     decr: 12601,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Taxi Lights
@@ -184,7 +187,7 @@ const commandList = [
     incr: 11702,
     decr: 11701,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Landing Lights On
@@ -196,7 +199,7 @@ const commandList = [
     incr: 11102,
     decr: 11101,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -207,7 +210,7 @@ const commandList = [
     incr: 11202,
     decr: 11201,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -218,7 +221,7 @@ const commandList = [
     incr: 11302,
     decr: 11301,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -229,7 +232,7 @@ const commandList = [
     incr: 11402,
     decr: 11401,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Runway Turnoff Lights On
@@ -241,7 +244,7 @@ const commandList = [
     incr: 11502,
     decr: 11501,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -252,7 +255,7 @@ const commandList = [
     incr: 11602,
     decr: 11601,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Transponder TA/RA
@@ -264,7 +267,7 @@ const commandList = [
     incr: 80001,
     decr: 80002,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Start Elapsed Timer
@@ -276,7 +279,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
   {
@@ -287,7 +290,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
   {
@@ -298,7 +301,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
   {
@@ -309,7 +312,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
   },
 ];
@@ -337,8 +340,6 @@ run(() => {
           let delay = command.delay();
           if (i < repeatCount && command.interval_delay > 0) {
             delay = command.interval_delay;
-          } else if (Number(this.store.delay) > 0) {
-            delay += Number(this.store.delay) || 450;
           }
 
           if (delay > 0) {

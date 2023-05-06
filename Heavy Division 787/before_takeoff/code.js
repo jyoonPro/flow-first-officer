@@ -12,7 +12,7 @@ settings_define({
 		type: "checkbox",
 		label: "Enable seatbelt signs check",
 		value: this.store.enable_seatbelt,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_seatbelt = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -39,7 +39,7 @@ settings_define({
 		type: "text",
 		label: "Delay between actions in milliseconds",
 		value: this.store.delay,
-		changed: (value) => {
+		changed: value => {
 			this.store.delay = value;
 			this.$api.datastore.export(this.store);
 		},

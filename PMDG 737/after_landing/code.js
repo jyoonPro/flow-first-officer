@@ -2,7 +2,7 @@ this.store = {
   enable_speedbrake: false,
   enable_flaps: false,
   stop_timer: true,
-  delay: "450",
+  delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -12,7 +12,7 @@ settings_define({
     type: "checkbox",
     label: "Enable speedbrake retraction",
     value: this.store.enable_speedbrake,
-    changed: (value) => {
+    changed: value => {
       this.store.enable_speedbrake = value;
       this.$api.datastore.export(this.store);
     },
@@ -21,7 +21,7 @@ settings_define({
     type: "checkbox",
     label: "Enable flaps retraction",
     value: this.store.enable_flaps,
-    changed: (value) => {
+    changed: value => {
       this.store.enable_flaps = value;
       this.$api.datastore.export(this.store);
     },
@@ -37,11 +37,14 @@ settings_define({
   },
   delay: {
     type: "text",
-    label: "Delay between actions in milliseconds",
+    label: "Delay between actions (ms)",
     value: this.store.delay,
-    changed: (value) => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+    changed: value => {
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -56,7 +59,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 1500,
+    delay: () => this.store.delay + 1500,
     enabled: () => this.store.enable_speedbrake,
   },
   // Flaps Up
@@ -68,7 +71,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 5500,
+    delay: () => this.store.delay + 5500,
     enabled: () => this.store.enable_flaps,
   },
   // Transponder Off
@@ -80,7 +83,7 @@ const commandList = [
     incr: 80001,
     decr: 80002,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Position Steady
@@ -92,7 +95,7 @@ const commandList = [
     incr: 12302,
     decr: 12301,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Landing Lights Off
@@ -104,7 +107,7 @@ const commandList = [
     incr: 11102,
     decr: 11101,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -115,7 +118,7 @@ const commandList = [
     incr: 11202,
     decr: 11201,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -126,7 +129,7 @@ const commandList = [
     incr: 11302,
     decr: 11301,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -137,7 +140,7 @@ const commandList = [
     incr: 11402,
     decr: 11401,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Runway Turnoff Lights Off
@@ -149,7 +152,7 @@ const commandList = [
     incr: 11502,
     decr: 11501,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -160,7 +163,7 @@ const commandList = [
     incr: 11602,
     decr: 11601,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Taxi Lights On
@@ -172,7 +175,7 @@ const commandList = [
     incr: 11702,
     decr: 11701,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // APU On
@@ -184,7 +187,7 @@ const commandList = [
     incr: 11802,
     decr: 11801,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Probe Heat Off
@@ -196,7 +199,7 @@ const commandList = [
     incr: 14002,
     decr: 14001,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -207,7 +210,7 @@ const commandList = [
     incr: 14102,
     decr: 14101,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Engine Start Switches Off/Auto
@@ -219,7 +222,7 @@ const commandList = [
     incr: 11901,
     decr: 11902,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   {
@@ -230,7 +233,7 @@ const commandList = [
     incr: 12101,
     decr: 12102,
     interval_delay: 100,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Auto Brake Off
@@ -242,7 +245,7 @@ const commandList = [
     incr: 46001,
     decr: 46002,
     interval_delay: 300,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => true,
   },
   // Stop Elapsed Timer
@@ -254,7 +257,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
   },
   {
@@ -265,7 +268,7 @@ const commandList = [
     incr: null,
     decr: null,
     interval_delay: 0,
-    delay: () => 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
   },
 ];
@@ -293,8 +296,6 @@ run(() => {
           let delay = command.delay();
           if (i < repeatCount && command.interval_delay > 0) {
             delay = command.interval_delay;
-          } else if (Number(this.store.delay) > 0) {
-            delay += Number(this.store.delay) || 450;
           }
 
           if (delay > 0) {

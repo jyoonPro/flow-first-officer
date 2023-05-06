@@ -2,7 +2,7 @@ this.store = {
 	enable_spoilers: false,
   enable_flaps: false,
   stop_timer: true,
-	delay: "450",
+	delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -12,7 +12,7 @@ settings_define({
 		type: "checkbox",
 		label: "Enable flaps retraction",
 		value: this.store.enable_flaps,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_flaps = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -21,7 +21,7 @@ settings_define({
 		type: "checkbox",
 		label: "Enable spoilers retraction",
 		value: this.store.enable_spoilers,
-		changed: (value) => {
+		changed: value => {
 			this.store.enable_spoilers = value;
 			this.$api.datastore.export(this.store);
 		},
@@ -37,11 +37,14 @@ settings_define({
   },
 	delay: {
 		type: "text",
-		label: "Delay between actions in milliseconds",
+		label: "Delay between actions (ms)",
 		value: this.store.delay,
-		changed: (value) => {
-			this.store.delay = value;
-			this.$api.datastore.export(this.store);
+		changed: value => {
+			const delay = Number(value);
+			if (Number.isInteger(delay) && delay >= 0) {
+				this.store.delay = delay;
+				this.$api.datastore.export(this.store);
+			}
 		},
 	},
 });
@@ -52,7 +55,7 @@ const commandList = [
 		var: "L:A310_SPOILERS_HANDLE_POSITION",
 		action: "B:Handling_Spoilers_Set",
 		desired_pos: () => 0,
-		delay: 100,
+		delay: () => this.store.delay + 100,
 		enabled: () => this.store.enable_spoilers,
 	},
 	// Flaps Up
@@ -60,7 +63,7 @@ const commandList = [
 		var: "L:FLAPS_HANDLE_POSITION",
 		action: "B:HANDLING_Flaps_Set",
 		desired_pos: () => 0,
-		delay: 100,
+		delay: () => this.store.delay + 100,
 		enabled: () => this.store.enable_flaps,
 	},
 	// Landing Lights Off
@@ -68,14 +71,14 @@ const commandList = [
 		var: "L:A310_LANDING_LIGHT_R_SWITCH",
 		action: null,
 		desired_pos: () => 2,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:A310_LANDING_LIGHT_L_SWITCH",
 		action: null,
 		desired_pos: () => 2,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Nose Light Taxi
@@ -83,7 +86,7 @@ const commandList = [
 		var: "L:A310_TAXI_LIGHTS_SWITCH",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Runway Turnoff Lights Off
@@ -91,14 +94,14 @@ const commandList = [
 		var: "L:A310_RWY_TURNOFF_L_SWITCH",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:A310_RWY_TURNOFF_R_SWITCH",
 		action: null,
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Ignition Off
@@ -106,7 +109,7 @@ const commandList = [
 		var: "L:A310_ENG_IGNITION_SWITCH",
 		action: null,
 		desired_pos: () => 3,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// APU Master Switch On
@@ -114,7 +117,7 @@ const commandList = [
 		var: "L:A310_apu_master_switch",
 		action: null,
 		desired_pos: () => 1,
-		delay: 3000,
+		delay: () => 3000,
 		enabled: () => true,
 	},
 	// APU Start On
@@ -122,14 +125,14 @@ const commandList = [
 		var: "L:S_OH_ELEC_APU_START",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:A310_apu_start_button",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// TCAS STBY
@@ -137,7 +140,7 @@ const commandList = [
 		var: "L:A310_TCAS_MODE_PEDESTAL",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Weather Radar Off
@@ -145,7 +148,7 @@ const commandList = [
 		var: "L:A310_WXR_SYS",
 		action: null,
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
   // Stop Elapsed Timer
@@ -153,14 +156,14 @@ const commandList = [
     var: "L:__CPT_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON",
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
   },
   {
     var: "L:__FO_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON_FO",
     desired_pos: () => 1,
-    delay: 0,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
   },
 ];
@@ -178,11 +181,7 @@ run(event => {
 			if (state !== command.desired_pos()) {
 				this.$api.variables.set(command.action || command.var, "number", command.desired_pos(true));
 
-				let delay = command.delay;
-				if (Number(this.store.delay) > 0) {
-					delay += Number(this.store.delay) || 450;
-				}
-
+				const delay = command.delay();
 				if (delay > 0) {
 					await timeout(delay);
 				}
