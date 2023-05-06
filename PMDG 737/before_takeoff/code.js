@@ -219,7 +219,7 @@ const commandList = [
     delay: () => 0,
     enabled: () => true,
   },
-  // Start Elaped Timer
+  // Start Elapsed Timer
   {
     var: "L:switch_320_73X",
     desired_pos: () => 100,
@@ -301,5 +301,6 @@ run(() => {
     }
   })();
 
+  this.$api.command.script_message_send("737-auto-ll", "", (callback) => {});
   return false;
 });

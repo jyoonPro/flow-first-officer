@@ -245,7 +245,7 @@ const commandList = [
     delay: () => 0,
     enabled: () => true,
   },
-  // Stop Elaped Timer
+  // Stop Elapsed Timer
   {
     var: "L:switch_321_73X",
     desired_pos: () => 100,
