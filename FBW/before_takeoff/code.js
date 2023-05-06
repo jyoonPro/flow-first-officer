@@ -172,5 +172,6 @@ run(event => {
     }
   })();
 
+  this.$api.command.script_message_send("320-fbw-auto-ll", "", (callback) => {});
   return false;
 });

@@ -152,12 +152,12 @@ run(event => {
       const state = this.$api.variables.get(command.var, "number");
       if (state !== command.desired_pos()) {
         this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
-        
+
         let delay = command.delay;
         if (Number(this.store.delay) > 0) {
           delay += Number(this.store.delay) || 450;
         }
-        
+
         if (delay > 0) {
           await timeout(delay);
         }
@@ -165,5 +165,6 @@ run(event => {
     }
   })();
 
+  this.$api.command.script_message_send("320-fenix-auto-ll", "", (callback) => {});
   return false;
 });
