@@ -118,8 +118,8 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
             await timeout(100);
           }
           await setSpeed(targetSpeed, 3);
-          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
+        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
       },
     };
 

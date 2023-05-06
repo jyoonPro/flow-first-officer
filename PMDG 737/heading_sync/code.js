@@ -107,8 +107,8 @@ search(["heading", "hdg"], (query, callback) => {
       execute: () => {
         (async () => {
           await setMcpHeading(targetHeading, 3);
-          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
+        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
       },
     };
 

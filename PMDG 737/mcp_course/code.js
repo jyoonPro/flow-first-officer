@@ -101,8 +101,8 @@ search(["course", "crs"], (query, callback) => {
         (async () => {
           await setMcpCourse(targetCourse, true, 3);
           await setMcpCourse(targetCourse, false, 3);
-          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
+        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
       },
     };
 

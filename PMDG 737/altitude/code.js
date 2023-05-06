@@ -95,8 +95,8 @@ search(["altitude", "alt", "fl"], (query, callback) => {
             await timeout(100);
             this.$api.variables.set("K:ROTOR_BRAKE", "number", 88501);
           }
-          this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
         })();
+        this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
       },
     };
 
