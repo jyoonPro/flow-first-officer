@@ -38,25 +38,16 @@ settings_define({
 
 let isArmed, isBelow;
 
-const isBright = () => {
+const isDark = () => {
   const time = this.$api.time.get_sim_time_local();
   const declination = this.$api.time.get_sun_position().declination;
   const latitude = this.$api.variables.get("A:PLANE LATITUDE", "radians");
 
-  console.log(latitude);
-  console.log(declination);
-
   const sunrise = 12 - (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
   const sunset = 12 + (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
 
-  console.log(sunrise);
-  console.log(sunset);
-
-  // Convert the current time to decimal hours
   const hours = time.getUTCHours() + time.getUTCMinutes() / 60 + time.getUTCSeconds() / 3600;
-
-  // Check if the current time is between sunrise and sunset
-  return hours >= sunrise + 0.5 && hours <= sunset - 0.5;
+  return hours < sunrise + 0.5 || hours > sunset - 0.5;
 }
 
 const getCurrentAltitude = () => this.$api.variables.get("A:PLANE ALTITUDE", "feet");
@@ -121,6 +112,88 @@ const commandList = [
     delay: () => 0,
     enabled: () => true,
   },
+  // Runway Turnoff Lights
+  {
+    var: "L:switch_115_73X",
+    desired_pos: () => isBelow ? 0 : 100,
+    step: 100,
+    action: null,
+    incr: 11502,
+    decr: 11501,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => true,
+  },
+  {
+    var: "L:switch_116_73X",
+    desired_pos: () => isBelow ? 0 : 100,
+    step: 100,
+    action: null,
+    incr: 11602,
+    decr: 11601,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => true,
+  },
+  // Taxi Lights
+  {
+    var: "L:switch_117_73X",
+    desired_pos: () => isBelow ? 0 : 100,
+    step: 100,
+    action: null,
+    incr: 11702,
+    decr: 11701,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => true,
+  },
+  // Logo Lights
+  {
+    var: "L:switch_122_73X",
+    desired_pos: () => isBelow ? 0 : 100,
+    step: 100,
+    action: null,
+    incr: 12202,
+    decr: 12201,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => isDark(),
+  },
+  // Wing Lights
+  {
+    var: "L:switch_125_73X",
+    desired_pos: () => isBelow ? 0 : 100,
+    step: 100,
+    action: null,
+    incr: 12502,
+    decr: 12501,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => isDark(),
+  },
+  // Engine
+  {
+    var: "L:switch_119_73X",
+    desired_pos: () => isBelow ? 10 : 20,
+    step: 10,
+    action: null,
+    incr: 11901,
+    decr: 11902,
+    interval_delay: 100,
+    delay: () => 0,
+    enabled: () => true,
+  },
+  {
+    var: "L:switch_121_73X",
+    desired_pos: () => isBelow ? 10 : 20,
+    step: 10,
+    action: null,
+    incr: 12101,
+    decr: 12102,
+    interval_delay: 100,
+    delay: () => 0,
+    enabled: () => true,
+  },
 ];
 
 function timeout(ms) {
@@ -137,6 +210,7 @@ loop_1hz(() => {
   const currentAltitude = getCurrentAltitude();
   if (isBelow && currentAltitude < this.store.off_altitude || !isBelow && currentAltitude > this.store.on_altitude) return;
 
+  isArmed = false;
   (async () => {
     for (const command of commandList) {
       if (!command.enabled()) continue;

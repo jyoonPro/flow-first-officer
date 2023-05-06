@@ -1,12 +1,25 @@
 this.store = {
   enable_seatbelt: false,
   takeoff_taxi_lights: false,
+  wing_lights: false,
   start_timer: true,
   tcas_ta_only: false,
   delay: "450",
 };
 
 this.$api.datastore.import(this.store);
+
+const isDark = () => {
+  const time = this.$api.time.get_sim_time_local();
+  const declination = this.$api.time.get_sun_position().declination;
+  const latitude = this.$api.variables.get("A:PLANE LATITUDE", "radians");
+
+  const sunrise = 12 - (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
+  const sunset = 12 + (12 / Math.PI) * Math.acos(-Math.tan(latitude) * Math.tan(declination));
+
+  const hours = time.getUTCHours() + time.getUTCMinutes() / 60 + time.getUTCSeconds() / 3600;
+  return hours < sunrise + 0.5 || hours > sunset - 0.5;
+}
 
 settings_define({
   enable_seatbelt: {
@@ -24,6 +37,15 @@ settings_define({
     value: this.store.takeoff_taxi_lights,
     changed: value => {
       this.store.takeoff_taxi_lights = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
+  wing_lights: {
+    type: "checkbox",
+    label: "Enable wing lights ON",
+    value: this.store.wing_lights,
+    changed: value => {
+      this.store.wing_lights = value;
       this.$api.datastore.export(this.store);
     },
   },
@@ -115,7 +137,19 @@ const commandList = [
     delay: () => 0,
     enabled: () => this.store.enable_seatbelt,
   },
-  // Position Stobe & Steady
+  // Logo Lights
+  {
+    var: "L:switch_122_73X",
+    desired_pos: () => 100,
+    step: 100,
+    action: null,
+    incr: 12202,
+    decr: 12201,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => isDark(),
+  },
+  // Position Strobe & Steady
   {
     var: "L:switch_123_73X",
     desired_pos: () => 0,
@@ -127,7 +161,31 @@ const commandList = [
     delay: () => 0,
     enabled: () => true,
   },
-  // Taxi Lights Off
+  // Wing Lights
+  {
+    var: "L:switch_125_73X",
+    desired_pos: () => 100,
+    step: 100,
+    action: null,
+    incr: 12502,
+    decr: 12501,
+    interval_delay: 0,
+    delay: () => 0,
+    enabled: () => this.store.wing_lights || isDark(),
+  },
+  // Wheel Well Lights Off
+  {
+    var: "L:switch_126_73X",
+    desired_pos: () => 0,
+    step: 100,
+    action: null,
+    incr: 12602,
+    decr: 12601,
+    interval_delay: 100,
+    delay: () => 0,
+    enabled: () => true,
+  },
+  // Taxi Lights
   {
     var: "L:switch_117_73X",
     desired_pos: () => this.store.takeoff_taxi_lights ? 100 : 0,

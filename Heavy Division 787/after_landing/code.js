@@ -106,7 +106,7 @@ const commandList = [
 		delay: 0,
 		enabled: () => true,
 	},
-	// Stobe Lights Off
+	// Strobe Lights Off
 	{
 		var: "L:LIGHTING_STROBE_1",
 		action: () => "B:LIGHTING_STROBE_1_SET",
