@@ -1,7 +1,7 @@
 this.store = {
 	enable_speedbrake: false,
 	enable_flaps: false,
-	delay: "450",
+	delay: 450,
 };
 
 this.$api.datastore.import(this.store);
@@ -27,11 +27,14 @@ settings_define({
 	},
 	delay: {
 		type: "text",
-		label: "Delay between actions in milliseconds",
+		label: "Delay between actions (ms)",
 		value: this.store.delay,
 		changed: value => {
-			this.store.delay = value;
-			this.$api.datastore.export(this.store);
+			const delay = Number(value);
+			if (Number.isInteger(delay) && delay >= 0) {
+				this.store.delay = delay;
+				this.$api.datastore.export(this.store);
+			}
 		},
 	},
 });
@@ -42,7 +45,7 @@ const commandList = [
 		var: "A:SPOILERS HANDLE POSITION",
 		action: null,
 		desired_pos: () => 0,
-		delay: 1000,
+		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_speedbrake,
 	},
 	// Flaps Up
@@ -50,7 +53,7 @@ const commandList = [
 		var: "A:FLAPS HANDLE INDEX",
 		action: null,
 		desired_pos: () => 0,
-		delay: 1000,
+		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_flaps,
 	},
 	// Transponder Off
@@ -58,7 +61,7 @@ const commandList = [
 		var: null,
 		action: "B:AIRLINER_ATC_Mode_XPNDR",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Landing Lights Off
@@ -66,28 +69,28 @@ const commandList = [
 		var: "L:LIGHTING_LANDING_1",
 		action: "B:LIGHTING_LANDING_1_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:LIGHTING_LANDING_4",
 		action: "B:LIGHTING_LANDING_4_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:LIGHTING_LANDING_2",
 		action: "B:LIGHTING_LANDING_2_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:LIGHTING_LANDING_3",
 		action: "B:LIGHTING_LANDING_3_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Runway Turnoff Lights Off
@@ -95,14 +98,14 @@ const commandList = [
 		var: "L:LIGHTING_TAXI_1",
 		action: "B:LIGHTING_TAXI_1_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
 		var: "L:LIGHTING_TAXI_2",
 		action: "B:LIGHTING_TAXI_2_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Taxi Lights On
@@ -110,7 +113,7 @@ const commandList = [
 		var: "L:LIGHTING_TAXI_3",
 		action: "B:LIGHTING_TAXI_3_SET",
 		desired_pos: () => 1,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// Strobe Lights Off
@@ -118,7 +121,7 @@ const commandList = [
 		var: "L:LIGHTING_STROBE_0",
 		action: "B:LIGHTING_STROBE_0_SET",
 		desired_pos: () => 0,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	// APU On
@@ -126,13 +129,13 @@ const commandList = [
 		var: "L:XMLVAR_APU_StarterKnob_Pos",
 		action: null,
 		desired_pos: () => 2,
-		delay: 0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 ];
 
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 run(event => {
@@ -144,11 +147,7 @@ run(event => {
 			if (state !== command.desired_pos()) {
 				this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
 
-				let delay = command.delay;
-				if (Number(this.store.delay) > 0) {
-					delay += Number(this.store.delay) || 450;
-				}
-
+				const delay = command.delay;
 				if (delay > 0) {
 					await timeout(delay);
 				}
