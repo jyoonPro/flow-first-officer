@@ -66,6 +66,53 @@ const tryArm = (forceOn = false) => {
 }
 
 const commandList = [
+  // Landing Lights
+  {
+    var: "A:CIRCUIT SWITCH ON:18",
+    action: null,
+    desired_pos: () => isBelow ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "A:CIRCUIT SWITCH ON:19",
+    action: null,
+    desired_pos: () => isBelow ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Nose Light
+  {
+    var: "L:LIGHTING_LANDING_1",
+    action: null,
+    desired_pos: () => isBelow ? 2 : 0,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Runway Turnoff Lights
+  {
+    var: "A:CIRCUIT SWITCH ON:21",
+    action: null,
+    desired_pos: () => isBelow ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Wing Lights
+  {
+    var: "A:LIGHT WING",
+    action: null,
+    desired_pos: () => isBelow ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isBelow || isDark(),
+  },
+  // Logo Lights
+  {
+    var: "A:LIGHT LOGO",
+    action: null,
+    desired_pos: () => isBelow ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isBelow || isDark(),
+  },
 ];
 
 function timeout(ms) {

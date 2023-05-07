@@ -1,5 +1,6 @@
 this.store = {
   enable_seatbelt: false,
+  wing_lights: false,
   start_timer: true,
   tcas_ta_only: false,
   delay: 450,
@@ -16,6 +17,15 @@ settings_define({
     value: this.store.enable_seatbelt,
     changed: value => {
       this.store.enable_seatbelt = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
+  wing_lights: {
+    type: "checkbox",
+    label: "Enable wing lights ON",
+    value: this.store.wing_lights,
+    changed: value => {
+      this.store.wing_lights = value;
       this.$api.datastore.export(this.store);
     },
   },
@@ -94,6 +104,23 @@ const commandList = [
     var: "L:S_WR_PRED_WS",
     action: null,
     desired_pos: () => 2,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Strobe Lights On
+  // Wing Lights
+  {
+    var: "L:S_OH_EXT_LT_WING",
+    action: null,
+    desired_pos: () => 1,
+    delay: () => this.store.delay,
+    enabled: () => this.store.wing_lights || isDark(),
+  },
+  // Nav & Logo Lights
+  {
+    var: "L:S_OH_EXT_LT_NAV_LOGO",
+    action: null,
+    desired_pos: () => isDark() ? 1 : 2,
     delay: () => this.store.delay,
     enabled: () => true,
   },

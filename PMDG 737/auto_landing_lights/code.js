@@ -156,7 +156,7 @@ const commandList = [
     decr: 12201,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => isDark(),
+    enabled: () => isBelow || isDark(),
   },
   // Wing Lights
   {
@@ -168,7 +168,7 @@ const commandList = [
     decr: 12501,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => isDark(),
+    enabled: () => isBelow || isDark(),
   },
   // Engine
   {

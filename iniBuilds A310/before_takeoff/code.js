@@ -1,5 +1,6 @@
 this.store = {
   enable_seatbelt: false,
+	wing_lights: false,
   start_timer: true,
 	tcas_ta_only: false,
 	delay: 450,
@@ -19,6 +20,15 @@ settings_define({
 			this.$api.datastore.export(this.store);
 		},
   },
+	wing_lights: {
+		type: "checkbox",
+		label: "Enable wing lights ON",
+		value: this.store.wing_lights,
+		changed: value => {
+			this.store.wing_lights = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
   start_timer: {
     type: "checkbox",
     label: "Reset & Start Elapsed Timer",
@@ -75,6 +85,14 @@ const commandList = [
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},
+	// Wing Lights
+	{
+		var: "L:A310_WING_LIGHT_SWITCH",
+		action: null,
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => this.store.wing_lights || isDark(),
+	},
 	// Landing Lights On
 	{
 		var: "L:A310_LANDING_LIGHT_R_SWITCH",
@@ -95,6 +113,14 @@ const commandList = [
 		var: "L:A310_TAXI_LIGHTS_SWITCH",
 		action: null,
 		desired_pos: () => 0,
+		delay: () => this.store.delay,
+		enabled: () => true,
+	},
+	// Nav & Logo Lights
+	{
+		var: "L:A310_NAV_LOGO_LIGHT_SWITCH",
+		action: null,
+		desired_pos: () => isDark() ? 1 : 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},
