@@ -107,6 +107,14 @@ const commandList = [
     delay: () => this.store.delay,
     enabled: () => true,
   },
+  // Strobe Lights On
+  {
+    var: "L:LIGHTING_STROBE_0",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
   // Wing Lights
   {
     var: "A:LIGHT WING",
@@ -189,7 +197,7 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-run(event => {
+run(() => {
   (async () => {
     for (const command of commandList) {
       if (!command.enabled()) continue;

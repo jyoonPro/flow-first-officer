@@ -131,7 +131,7 @@ function timeout(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-run(event => {
+run(() => {
 	(async () => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;

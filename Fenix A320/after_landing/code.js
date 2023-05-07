@@ -73,6 +73,14 @@ const commandList = [
 		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_flaps,
 	},
+	// Strobe Lights Auto
+	{
+		var: "L:S_OH_EXT_LT_STROBE",
+		action: null,
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => true,
+	},
 	// Landing Lights Off
 	{
 		var: "L:S_OH_EXT_LT_LANDING_L",
@@ -164,7 +172,7 @@ function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-run(event => {
+run(() => {
 	(async () => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;

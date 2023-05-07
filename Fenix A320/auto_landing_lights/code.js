@@ -45,7 +45,7 @@ settings_define({
   },
 });
 
-let isArmed, isBelow;
+let isArmed, isTargetOff;
 
 const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
@@ -55,10 +55,10 @@ const tryArm = (forceOn = false) => {
   const currentAltitude = getCurrentAltitude();
 
   if (currentAltitude < this.store.off_altitude) {
-    isBelow = true;
+    isTargetOff = true;
     isArmed = forceOn || !isArmed;
   } else if (currentAltitude > this.store.on_altitude) {
-    isBelow = false;
+    isTargetOff = false;
     isArmed = forceOn || !isArmed;
   } else {
     isArmed = false;
@@ -66,6 +66,53 @@ const tryArm = (forceOn = false) => {
 }
 
 const commandList = [
+  // Landing Lights
+  {
+    var: "L:S_OH_EXT_LT_LANDING_L",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 2,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:S_OH_EXT_LT_LANDING_R",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 2,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Nose Light
+  {
+    var: "L:S_OH_EXT_LT_NOSE",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Runway Turnoff Lights
+  {
+    var: "L:S_OH_EXT_LT_RWY_TURNOFF",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Wing Lights
+  {
+    var: "L:S_OH_EXT_LT_WING",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
+  // Logo Lights
+  {
+    var: "L:S_OH_EXT_LT_NAV_LOGO",
+    action: null,
+    desired_pos: () => isTargetOff ? 1 : 2,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
 ];
 
 function timeout(ms) {
@@ -80,7 +127,7 @@ loop_1hz(() => {
   if (!isArmed) return;
 
   const currentAltitude = getCurrentAltitude();
-  if (isBelow && currentAltitude < this.store.off_altitude || !isBelow && currentAltitude > this.store.on_altitude) return;
+  if (isTargetOff && currentAltitude < this.store.off_altitude || !isTargetOff && currentAltitude > this.store.on_altitude) return;
 
   isArmed = false;
   (async () => {
@@ -101,7 +148,7 @@ loop_1hz(() => {
 });
 
 info(() => {
-  return isArmed ? (isBelow ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
+  return isArmed ? (isTargetOff ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
 });
 
 style(() => {

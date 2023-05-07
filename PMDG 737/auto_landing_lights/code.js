@@ -45,7 +45,7 @@ settings_define({
   },
 });
 
-let isArmed, isBelow;
+let isArmed, isTargetOff;
 
 const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
@@ -55,10 +55,10 @@ const tryArm = (forceOn = false) => {
   const currentAltitude = getCurrentAltitude();
 
   if (currentAltitude < this.store.off_altitude) {
-    isBelow = true;
+    isTargetOff = true;
     isArmed = forceOn || !isArmed;
   } else if (currentAltitude > this.store.on_altitude) {
-    isBelow = false;
+    isTargetOff = false;
     isArmed = forceOn || !isArmed;
   } else {
     isArmed = false;
@@ -69,7 +69,7 @@ const commandList = [
   // Landing Lights
   {
     var: "L:switch_111_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 50,
     action: null,
     incr: 11102,
@@ -80,7 +80,7 @@ const commandList = [
   },
   {
     var: "L:switch_112_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 50,
     action: null,
     incr: 11202,
@@ -91,7 +91,7 @@ const commandList = [
   },
   {
     var: "L:switch_113_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 11302,
@@ -102,7 +102,7 @@ const commandList = [
   },
   {
     var: "L:switch_114_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 11402,
@@ -114,7 +114,7 @@ const commandList = [
   // Runway Turnoff Lights
   {
     var: "L:switch_115_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 11502,
@@ -125,7 +125,7 @@ const commandList = [
   },
   {
     var: "L:switch_116_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 11602,
@@ -137,7 +137,7 @@ const commandList = [
   // Taxi Lights
   {
     var: "L:switch_117_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 11702,
@@ -149,31 +149,31 @@ const commandList = [
   // Logo Lights
   {
     var: "L:switch_122_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 12202,
     decr: 12201,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => isBelow || isDark(),
+    enabled: () => isTargetOff || isDark(),
   },
   // Wing Lights
   {
     var: "L:switch_125_73X",
-    desired_pos: () => isBelow ? 0 : 100,
+    desired_pos: () => isTargetOff ? 0 : 100,
     step: 100,
     action: null,
     incr: 12502,
     decr: 12501,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => isBelow || isDark(),
+    enabled: () => isTargetOff || isDark(),
   },
   // Engine
   {
     var: "L:switch_119_73X",
-    desired_pos: () => isBelow ? 10 : 20,
+    desired_pos: () => isTargetOff ? 10 : 20,
     step: 10,
     action: null,
     incr: 11901,
@@ -184,7 +184,7 @@ const commandList = [
   },
   {
     var: "L:switch_121_73X",
-    desired_pos: () => isBelow ? 10 : 20,
+    desired_pos: () => isTargetOff ? 10 : 20,
     step: 10,
     action: null,
     incr: 12101,
@@ -207,7 +207,7 @@ loop_1hz(() => {
   if (!isArmed) return;
 
   const currentAltitude = getCurrentAltitude();
-  if (isBelow && currentAltitude < this.store.off_altitude || !isBelow && currentAltitude > this.store.on_altitude) return;
+  if (isTargetOff && currentAltitude < this.store.off_altitude || !isTargetOff && currentAltitude > this.store.on_altitude) return;
 
   isArmed = false;
   (async () => {
@@ -240,7 +240,7 @@ loop_1hz(() => {
 });
 
 info(() => {
-  return isArmed ? (isBelow ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
+  return isArmed ? (isTargetOff ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
 });
 
 style(() => {

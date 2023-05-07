@@ -66,6 +66,14 @@ const commandList = [
 		delay: () => this.store.delay + 100,
 		enabled: () => this.store.enable_flaps,
 	},
+	// Strobe Lights Auto
+	{
+		var: "L:A310_POTENTIOMETER_24",
+		action: null,
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => true,
+	},
 	// Landing Lights Off
 	{
 		var: "L:A310_LANDING_LIGHT_R_SWITCH",
@@ -169,10 +177,10 @@ const commandList = [
 ];
 
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-run(event => {
+run(() => {
 	(async () => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;

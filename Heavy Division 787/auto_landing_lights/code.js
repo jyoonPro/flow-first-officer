@@ -45,7 +45,7 @@ settings_define({
   },
 });
 
-let isArmed, isBelow;
+let isArmed, isTargetOff;
 
 const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
@@ -55,10 +55,10 @@ const tryArm = (forceOn = false) => {
   const currentAltitude = getCurrentAltitude();
 
   if (currentAltitude < this.store.off_altitude) {
-    isBelow = true;
+    isTargetOff = true;
     isArmed = forceOn || !isArmed;
   } else if (currentAltitude > this.store.on_altitude) {
-    isBelow = false;
+    isTargetOff = false;
     isArmed = forceOn || !isArmed;
   } else {
     isArmed = false;
@@ -66,6 +66,53 @@ const tryArm = (forceOn = false) => {
 }
 
 const commandList = [
+  // Landing Lights
+  {
+    var: "L:LIGHTING_LANDING_2",
+    action: () => "B:LIGHTING_LANDING_2_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:LIGHTING_LANDING_1",
+    action: () => "B:LIGHTING_LANDING_1_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:LIGHTING_LANDING_3",
+    action: () => "B:LIGHTING_LANDING_3_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Runway Turnoff Lights
+  {
+    var: "L:LIGHTING_TAXI_2",
+    action: () => "B:LIGHTING_TAXI_2_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:LIGHTING_TAXI_3",
+    action: () => "B:LIGHTING_TAXI_3_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Taxi Lights
+  {
+    var: "L:LIGHTING_TAXI_1",
+    action: () => "B:LIGHTING_TAXI_1_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Logo Lights
+  // Wing Lights
 ];
 
 function timeout(ms) {
@@ -80,7 +127,7 @@ loop_1hz(() => {
   if (!isArmed) return;
 
   const currentAltitude = getCurrentAltitude();
-  if (isBelow && currentAltitude < this.store.off_altitude || !isBelow && currentAltitude > this.store.on_altitude) return;
+  if (isTargetOff && currentAltitude < this.store.off_altitude || !isTargetOff && currentAltitude > this.store.on_altitude) return;
 
   isArmed = false;
   (async () => {
@@ -101,7 +148,7 @@ loop_1hz(() => {
 });
 
 info(() => {
-  return isArmed ? (isBelow ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
+  return isArmed ? (isTargetOff ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
 });
 
 style(() => {

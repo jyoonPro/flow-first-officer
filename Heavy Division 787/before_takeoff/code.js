@@ -1,6 +1,7 @@
 this.store = {
   enable_seatbelt: false,
   takeoff_taxi_lights: false,
+	wing_lights: false,
 	tcas_ta_only: false,
 	delay: 450,
 };
@@ -28,6 +29,15 @@ settings_define({
       this.$api.datastore.export(this.store);
 		},
   },
+	wing_lights: {
+		type: "checkbox",
+		label: "Enable wing lights ON",
+		value: this.store.wing_lights,
+		changed: value => {
+			this.store.wing_lights = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
 	tcas_ta_only: {
 		type: "checkbox",
 		label: "Set TCAS to TA Only",
@@ -72,7 +82,7 @@ const commandList = [
 		var: "L:LIGHTING_LANDING_1",
 		action: () => "B:LIGHTING_LANDING_1_SET",
 		desired_pos: () => 1,
-		delay: () => this.store.delay0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
@@ -87,7 +97,7 @@ const commandList = [
 		var: "L:LIGHTING_TAXI_2",
 		action: () => "B:LIGHTING_TAXI_2_SET",
 		desired_pos: () => 1,
-		delay: () => this.store.delay0,
+		delay: () => this.store.delay,
 		enabled: () => true,
 	},
 	{
@@ -113,6 +123,22 @@ const commandList = [
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},
+	// TODO: Logo Lights
+	{
+		var: "",
+		action: () => "",
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => isDark(),
+	},
+	// TODO: Wing Lights
+	{
+		var: "",
+		action: () => "",
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => this.store.wing_lights || isDark(),
+	},
 	// Transponder TA/RA
 	{
 		var: "L:XMLVAR_Transponder_Mode",
@@ -135,7 +161,7 @@ function timeout(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-run(event => {
+run(() => {
 	(async () => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;

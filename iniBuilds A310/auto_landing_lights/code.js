@@ -45,7 +45,7 @@ settings_define({
   },
 });
 
-let isArmed, isBelow;
+let isArmed, isTargetOff;
 
 const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
@@ -55,10 +55,10 @@ const tryArm = (forceOn = false) => {
   const currentAltitude = getCurrentAltitude();
 
   if (currentAltitude < this.store.off_altitude) {
-    isBelow = true;
+    isTargetOff = true;
     isArmed = forceOn || !isArmed;
   } else if (currentAltitude > this.store.on_altitude) {
-    isBelow = false;
+    isTargetOff = false;
     isArmed = forceOn || !isArmed;
   } else {
     isArmed = false;
@@ -66,6 +66,68 @@ const tryArm = (forceOn = false) => {
 }
 
 const commandList = [
+  // Landing Lights
+  {
+    var: "L:A310_LANDING_LIGHT_R_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 2 : 0,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:A310_LANDING_LIGHT_L_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 2 : 0,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Nose Light
+  {
+    var: "L:A310_TAXI_LIGHTS_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 2 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Runway Turnoff Lights
+  {
+    var: "L:A310_RWY_TURNOFF_L_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  {
+    var: "L:A310_RWY_TURNOFF_R_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
+  // Wing Lights
+  {
+    var: "L:A310_WING_LIGHT_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
+  // Logo Lights
+  {
+    var: "L:A310_NAV_LOGO_LIGHT_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 1 : 0,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
+  // Engine
+  {
+    var: "L:A310_ENG_IGNITION_SWITCH",
+    action: null,
+    desired_pos: () => isTargetOff ? 3 : 4,
+    delay: () => this.store.delay,
+    enabled: () => true,
+  },
 ];
 
 function timeout(ms) {
@@ -80,7 +142,7 @@ loop_1hz(() => {
   if (!isArmed) return;
 
   const currentAltitude = getCurrentAltitude();
-  if (isBelow && currentAltitude < this.store.off_altitude || !isBelow && currentAltitude > this.store.on_altitude) return;
+  if (isTargetOff && currentAltitude < this.store.off_altitude || !isTargetOff && currentAltitude > this.store.on_altitude) return;
 
   isArmed = false;
   (async () => {
@@ -101,7 +163,7 @@ loop_1hz(() => {
 });
 
 info(() => {
-  return isArmed ? (isBelow ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
+  return isArmed ? (isTargetOff ? "AUTO OFF ARMED" : "AUTO ON ARMED") : null;
 });
 
 style(() => {
