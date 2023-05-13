@@ -35,7 +35,7 @@ const isMach = () => {
   const rawValue = this.$api.variables.get("L:ngx_SPDwindow", "number");
 
   // Altitude above FL260 OR speed window indicates mach value
-  return this.$api.variables.get("A:PLANE ALTITUDE", "feet") > 26000 || rawValue > 0 && rawValue < 1;
+  return this.$api.variables.get("A:INDICATED ALTITUDE CALIBRATED", "feet") > 26000 || rawValue > 0 && rawValue < 1;
 }
 
 function timeout(ms) {

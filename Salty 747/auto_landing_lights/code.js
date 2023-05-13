@@ -49,7 +49,7 @@ let isArmed, isTargetOff;
 
 const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
-const getCurrentAltitude = () => this.$api.variables.get("A:PLANE ALTITUDE", "feet");
+const getCurrentAltitude = () => this.$api.variables.get("A:INDICATED ALTITUDE CALIBRATED", "feet");
 
 const tryArm = (forceOn = false) => {
   const currentAltitude = getCurrentAltitude();
