@@ -130,18 +130,18 @@ const commandList = [
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},
-	// TODO: Wing Lights
+	// Wing Lights
 	{
-		var: "",
-		action: "",
+		var: "L:LIGHTING_WING_0",
+		action: "B:LIGHTING_WING_0_SET",
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => this.store.wing_lights || isDark(),
 	},
-	// TODO: Logo Lights
+	// Logo Lights
 	{
-		var: "",
-		action: "",
+		var: "L:LIGHTING_LOGO_0",
+		action: "B:LIGHTING_LOGO_0_SET",
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => isDark(),

@@ -31,8 +31,8 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const setMcpCourse = async (targetCourse, isLeft, retry) => {
-  const mcpCourse = isLeft ? getLeftMcpCourse() : getRightMcpCourse();
+const setMcpCourse = async (targetCourse, isCaptainSide, retry) => {
+  const mcpCourse = isCaptainSide ? getLeftMcpCourse() : getRightMcpCourse();
   const angleDifference = getSignedAngleDifference(mcpCourse, targetCourse);
 
   if (angleDifference < 0) {
@@ -40,30 +40,30 @@ const setMcpCourse = async (targetCourse, isLeft, retry) => {
 
     for (let i = 0; i < normalStep; i++) {
       await timeout(50);
-      this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37607 : 40907);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", isCaptainSide ? 37607 : 40907);
     }
 
     for (let i = 0; i < extraStep; i++) {
       await timeout(200);
-      this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37607 : 40907);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", isCaptainSide ? 37607 : 40907);
     }
   } else if (angleDifference > 0) {
     const {normalStep, extraStep} = getStepCount(angleDifference);
 
     for (let i = 0; i < normalStep; i++) {
       await timeout(50);
-      this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37608 : 40908);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", isCaptainSide ? 37608 : 40908);
     }
 
     for (let i = 0; i < extraStep; i++) {
       await timeout(200);
-      this.$api.variables.set("K:ROTOR_BRAKE", "number", isLeft ? 37608 : 40908);
+      this.$api.variables.set("K:ROTOR_BRAKE", "number", isCaptainSide ? 37608 : 40908);
     }
   }
 
   // In case of frame/instruction drops
   await timeout(200);
-  if (isLeft && getLeftMcpCourse() !== targetCourse || !isLeft && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse, isLeft, retry - 1);
+  if (isCaptainSide && getLeftMcpCourse() !== targetCourse || !isCaptainSide && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse, isCaptainSide, retry - 1);
 }
 
 run(() => {

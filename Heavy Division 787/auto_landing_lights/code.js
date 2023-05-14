@@ -112,7 +112,21 @@ const commandList = [
     enabled: () => true,
   },
   // Logo Lights
+  {
+    var: "L:LIGHTING_LOGO_1",
+    action: () => "B:LIGHTING_LOGO_1_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
   // Wing Lights
+  {
+    var: "L:LIGHTING_WING_1",
+    action: () => "B:LIGHTING_WING_1_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
 ];
 
 function timeout(ms) {

@@ -58,7 +58,7 @@ const setAltitude = async (targetAltitude, retry) => {
   // In case of frame/instruction drops
   await timeout(200);
   if (getAltitude() !== targetAltitude && retry > 0) setAltitude(targetAltitude, retry - 1);
-}
+};
 
 scroll(cfg => {
   if (cfg.scroll > 0) {

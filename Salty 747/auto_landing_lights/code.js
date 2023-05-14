@@ -118,8 +118,22 @@ const commandList = [
     delay: () => this.store.delay,
     enabled: () => true,
   },
-  // Logo Lights
   // Wing Lights
+  {
+    var: "L:LIGHTING_WING_0",
+    action: "B:LIGHTING_WING_0_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
+  // Logo Lights
+  {
+    var: "L:LIGHTING_LOGO_0",
+    action: "B:LIGHTING_LOGO_0_SET",
+    desired_pos: () => isTargetOff ? 0 : 1,
+    delay: () => this.store.delay,
+    enabled: () => isTargetOff || isDark(),
+  },
 ];
 
 function timeout(ms) {

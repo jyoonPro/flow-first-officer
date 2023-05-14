@@ -124,14 +124,6 @@ const commandList = [
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},
-	// Nav & Logo Lights
-	{
-		var: "L:A310_NAV_LOGO_LIGHT_SWITCH",
-		action: null,
-		desired_pos: () => isDark() ? 1 : 0,
-		delay: () => this.store.delay,
-		enabled: () => true,
-	},
 	// Runway Turnoff Lights On
 	{
 		var: "L:A310_RWY_TURNOFF_L_SWITCH",
@@ -144,6 +136,14 @@ const commandList = [
 		var: "L:A310_RWY_TURNOFF_R_SWITCH",
 		action: null,
 		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => true,
+	},
+	// Nav & Logo Lights
+	{
+		var: "L:A310_NAV_LOGO_LIGHT_SWITCH",
+		action: null,
+		desired_pos: () => isDark() ? 0 : 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
 	},

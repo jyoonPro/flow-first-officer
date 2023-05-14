@@ -127,7 +127,7 @@ const commandList = [
   {
     var: "L:S_OH_EXT_LT_NAV_LOGO",
     action: null,
-    desired_pos: () => isDark() ? 1 : 2,
+    desired_pos: () => isDark() ? 2 : 1,
     delay: () => this.store.delay,
     enabled: () => true,
   },
