@@ -69,7 +69,7 @@ const setMinimums = async (targetMinimums, isCaptainSide, isBaro) => {
     this.$api.variables.set("K:ROTOR_BRAKE", "number", isCaptainSide ? 35501 : 41101);
   }
 
-  await timeout(450);
+  await timeout(600);
 
   const difference = isBaro ? targetMinimums + 200 : targetMinimums;
   const {normalStep, extraStep} = getStepCount(difference);

@@ -1,7 +1,7 @@
 this.store = {
 	enable_speedbrake: false,
 	enable_flaps: false,
-	delay: 450,
+	delay: 600,
 };
 
 this.$api.datastore.import(this.store);

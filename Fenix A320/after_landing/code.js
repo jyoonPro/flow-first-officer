@@ -2,7 +2,7 @@ this.store = {
 	enable_spoilers: false,
   enable_flaps: false,
   stop_timer: true,
-	delay: 450,
+	delay: 600,
 };
 
 this.$api.datastore.import(this.store);

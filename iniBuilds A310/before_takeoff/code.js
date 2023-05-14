@@ -3,7 +3,7 @@ this.store = {
 	wing_lights: false,
   start_timer: true,
 	tcas_ta_only: false,
-	delay: 450,
+	delay: 600,
 };
 
 this.$api.datastore.import(this.store);

@@ -2,7 +2,7 @@ this.store = {
   enable_speedbrake: false,
   enable_flaps: false,
   stop_timer: true,
-  delay: 450,
+  delay: 600,
 };
 
 this.$api.datastore.import(this.store);
@@ -282,8 +282,8 @@ run(() => {
     for (const command of commandList) {
       if (!command.enabled()) continue;
 
-      const state = this.$api.variables.get(command.var, "number");
-      if (state !== command.desired_pos()) {
+      let state = this.$api.variables.get(command.var, "number");
+      while (state !== command.desired_pos()) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -302,9 +302,12 @@ run(() => {
             await timeout(delay);
           }
         }
+
+        state = this.$api.variables.get(command.var, "number");
       }
     }
   })();
 
+  this.$api.command.script_message_send("737-auto-ll", "", (callback) => {});
   return false;
 });

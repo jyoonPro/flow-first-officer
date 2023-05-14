@@ -1,5 +1,5 @@
 this.store = {
-  delay: "0",
+  delay: 0,
 };
 
 this.$api.datastore.import(this.store);
@@ -10,8 +10,11 @@ settings_define({
     label: "Delay between actions (ms)",
     value: this.store.delay,
     changed: value => {
-      this.store.delay = value;
-      this.$api.datastore.export(this.store);
+      const delay = Number(value);
+      if (Number.isInteger(delay) && delay >= 0) {
+        this.store.delay = delay;
+        this.$api.datastore.export(this.store);
+      }
     },
   },
 });
@@ -19,19 +22,19 @@ settings_define({
 const commandList = [
   {
     action: 62301,
-    delay: 100,
+    delay: () => this.store.delay + 100,
   },
   {
     action: 61601,
-    delay: 100,
+    delay: () => this.store.delay + 100,
   },
   {
     action: 61201,
-    delay: 100,
+    delay: () => this.store.delay + 100,
   },
   {
     action: 61701,
-    delay: 100,
+    delay: () => this.store.delay + 100,
   },
 ];
 
@@ -46,11 +49,7 @@ run(() => {
     for (const command of commandList) {
       this.$api.variables.set("K:ROTOR_BRAKE", "number", command.action);
 
-      let delay = command.delay;
-      if (Number(this.store.delay) > 0) {
-        delay += Number(this.store.delay) || 450;
-      }
-
+      const delay = command.delay();
       if (delay > 0) {
         await timeout(delay);
       }

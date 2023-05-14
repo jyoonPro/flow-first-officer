@@ -4,7 +4,7 @@ this.store = {
   wing_lights: false,
   start_timer: true,
   tcas_ta_only: false,
-  delay: 450,
+  delay: 600,
 };
 
 this.$api.datastore.import(this.store);
@@ -326,8 +326,8 @@ run(() => {
     for (const command of commandList) {
       if (!command.enabled()) continue;
 
-      const state = this.$api.variables.get(command.var, "number");
-      if (state !== command.desired_pos()) {
+      let state = this.$api.variables.get(command.var, "number");
+      while (state !== command.desired_pos()) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -346,6 +346,8 @@ run(() => {
             await timeout(delay);
           }
         }
+
+        state = this.$api.variables.get(command.var, "number");
       }
     }
   })();

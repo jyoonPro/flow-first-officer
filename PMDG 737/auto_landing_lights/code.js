@@ -1,7 +1,7 @@
 this.store = {
   off_altitude: 9000,
   on_altitude: 11000,
-  delay: 450,
+  delay: 600,
 };
 
 this.$api.datastore.import(this.store);
@@ -214,8 +214,8 @@ loop_1hz(() => {
     for (const command of commandList) {
       if (!command.enabled()) continue;
 
-      const state = this.$api.variables.get(command.var, "number");
-      if (state !== command.desired_pos()) {
+      let state = this.$api.variables.get(command.var, "number");
+      while (state !== command.desired_pos()) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -234,6 +234,8 @@ loop_1hz(() => {
             await timeout(delay);
           }
         }
+
+        state = this.$api.variables.get(command.var, "number");
       }
     }
   })();

@@ -1,7 +1,7 @@
 this.store = {
   off_altitude: 9000,
   on_altitude: 11000,
-  delay: 450,
+  delay: 600,
 };
 
 this.$api.datastore.import(this.store);
