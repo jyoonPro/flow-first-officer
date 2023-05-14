@@ -69,6 +69,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => this.store.enable_seatbelt,
+		perform_once: false,
 	},
 	// Landing Lights On
 	{
@@ -77,6 +78,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_1",
@@ -84,6 +86,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_3",
@@ -91,6 +94,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Runway Turnoff Lights On
 	{
@@ -99,6 +103,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_TAXI_3",
@@ -106,6 +111,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Taxi Lights Off
 	{
@@ -114,6 +120,7 @@ const commandList = [
     desired_pos: () => this.store.takeoff_taxi_lights ? 1 : 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Strobe Lights On
 	{
@@ -122,6 +129,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Logo Lights
 	{
@@ -130,6 +138,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => isDark(),
+		perform_once: false,
 	},
 	// Wing Lights
 	{
@@ -138,6 +147,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => this.store.wing_lights || isDark(),
+		perform_once: false,
 	},
 	// Transponder TA/RA
 	{
@@ -146,6 +156,7 @@ const commandList = [
 		desired_pos: () => 4,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: true,
 	},
 	// Autobrake RTO
 	{
@@ -154,6 +165,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 ];
 
@@ -166,14 +178,18 @@ run(() => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;
 
-			const state = this.$api.variables.get(command.var, "number");
-			if (state !== command.desired_pos()) {
+			let state = this.$api.variables.get(command.var, "number");
+			let retry = 3;
+			while (state !== command.desired_pos() && retry-- > 0) {
 				this.$api.variables.set(command.action() || command.var, "number", command.desired_pos());
 
 				const delay = command.delay();
 				if (delay > 0) {
 					await timeout(delay);
 				}
+
+				if (command.perform_once) break;
+				state = this.$api.variables.get(command.var, "number");
 			}
 		}
 	})();

@@ -57,6 +57,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_spoilers,
+		perform_once: false,
   },
   {
     var: "L:A32NX_SPOILERS_ARMED",
@@ -64,6 +65,7 @@ const commandList = [
     desired_pos: () => 0,
     delay: () => this.store.delay + 500,
     enabled: () => this.store.enable_spoilers,
+		perform_once: false,
   },
 	// Flaps Up
 	{
@@ -72,6 +74,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_flaps,
+		perform_once: false,
 	},
 	// Strobe Lights Auto
 	{
@@ -80,6 +83,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Landing Lights Off - Add both vars for Headwind compatibility
 	{
@@ -88,6 +92,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_2",
@@ -95,6 +100,7 @@ const commandList = [
 		desired_pos: () => 2,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "A:CIRCUIT SWITCH ON:19",
@@ -102,6 +108,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_3",
@@ -109,6 +116,7 @@ const commandList = [
 		desired_pos: () => 2,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Nose Light Taxi
 	{
@@ -117,6 +125,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Runway Turnoff Lights Off
 	{
@@ -125,6 +134,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "A:CIRCUIT SWITCH ON:22",
@@ -132,6 +142,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// APU Master On
 	{
@@ -140,6 +151,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => 3000,
 		enabled: () => true,
+		perform_once: true,
 	},
 	// APU Start On
 	{
@@ -148,6 +160,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: true,
 	},
 	// Weather Radar Off
 	{
@@ -156,6 +169,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:A32NX_SWITCH_RADAR_PWS_POSITION",
@@ -163,6 +177,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// TCAS STBY
 	{
@@ -171,6 +186,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
   // Stop Elapsed Timer
   {
@@ -179,6 +195,7 @@ const commandList = [
     desired_pos: () => 1,
     delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
+		perform_once: false,
   },
 ];
 
@@ -191,17 +208,21 @@ run(() => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;
 
-			const state = this.$api.variables.get(command.var, "number");
-			if (state !== command.desired_pos()) {
+			let state = this.$api.variables.get(command.var, "number");
+			let retry = 3;
+			while (state !== command.desired_pos() && retry-- > 0) {
 				this.$api.variables.set(command.action || command.var, "number", command.desired_pos());
 
 				const delay = command.delay();
 				if (delay > 0) {
 					await timeout(delay);
 				}
+
+				if (command.perform_once) break;
+				state = this.$api.variables.get(command.var, "number");
 			}
 		}
 	})();
 
-    return false;
+	return false;
 });

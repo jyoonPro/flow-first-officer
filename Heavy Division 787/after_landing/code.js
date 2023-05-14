@@ -47,6 +47,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_speedbrake,
+		perform_once: false,
 	},
 	// Flaps Up
 	{
@@ -55,6 +56,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_flaps,
+		perform_once: false,
 	},
 	// Transponder Off
 	{
@@ -63,6 +65,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: true,
 	},
 	// Landing Lights Off
 	{
@@ -71,6 +74,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_1",
@@ -78,6 +82,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_LANDING_3",
@@ -85,6 +90,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Runway Turnoff Lights Off
 	{
@@ -93,6 +99,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	{
 		var: "L:LIGHTING_TAXI_3",
@@ -100,6 +107,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Taxi Lights On
 	{
@@ -108,6 +116,7 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// Strobe Lights Off
 	{
@@ -116,6 +125,7 @@ const commandList = [
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
 	},
 	// APU On
 	{
@@ -124,6 +134,7 @@ const commandList = [
 		desired_pos: () => 2,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: true,
 	},
 ];
 
@@ -136,14 +147,18 @@ run(() => {
 		for (const command of commandList) {
 			if (!command.enabled()) continue;
 
-			const state = this.$api.variables.get(command.var, "number");
-			if (state !== command.desired_pos()) {
+			let state = this.$api.variables.get(command.var, "number");
+			let retry = 3;
+			while (state !== command.desired_pos() && retry-- > 0) {
 				this.$api.variables.set(command.action() || command.var, "number", command.desired_pos());
 
 				const delay = command.delay();
 				if (delay > 0) {
 					await timeout(delay);
 				}
+
+				if (command.perform_once) break;
+				state = this.$api.variables.get(command.var, "number");
 			}
 		}
 	})();

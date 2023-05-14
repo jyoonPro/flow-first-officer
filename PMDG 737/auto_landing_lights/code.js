@@ -77,6 +77,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_112_73X",
@@ -88,6 +89,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_113_73X",
@@ -99,6 +101,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_114_73X",
@@ -110,6 +113,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Runway Turnoff Lights
   {
@@ -122,6 +126,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_116_73X",
@@ -133,6 +138,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Taxi Lights
   {
@@ -145,6 +151,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Logo Lights
   {
@@ -157,6 +164,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => isTargetOff || isDark(),
+    perform_once: false,
   },
   // Wing Lights
   {
@@ -169,6 +177,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => isTargetOff || isDark(),
+    perform_once: false,
   },
   // Engine
   {
@@ -181,6 +190,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_121_73X",
@@ -192,6 +202,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
 ];
 
@@ -215,7 +226,8 @@ loop_1hz(() => {
       if (!command.enabled()) continue;
 
       let state = this.$api.variables.get(command.var, "number");
-      while (state !== command.desired_pos()) {
+      let retry = 3;
+      while (state !== command.desired_pos() && retry-- > 0) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -235,6 +247,7 @@ loop_1hz(() => {
           }
         }
 
+        if (command.perform_once) break;
         state = this.$api.variables.get(command.var, "number");
       }
     }

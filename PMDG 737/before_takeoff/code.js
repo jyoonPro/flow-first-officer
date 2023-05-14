@@ -83,6 +83,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Reset Fuel Flow
   {
@@ -93,8 +94,9 @@ const commandList = [
     incr: 46802,
     decr: 46801,
     interval_delay: 0,
-    delay: () => 200,
+    delay: () => 300,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_468_73X",
@@ -106,6 +108,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Seatbelt & Smoke Signs
   {
@@ -118,6 +121,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
+    perform_once: false,
   },
   {
     var: "L:switch_104_73X",
@@ -129,6 +133,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => this.store.enable_seatbelt,
+    perform_once: false,
   },
   // Logo Lights
   {
@@ -141,6 +146,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => isDark(),
+    perform_once: false,
   },
   // Position Strobe & Steady
   {
@@ -153,6 +159,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Wing Lights
   {
@@ -165,6 +172,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.wing_lights || isDark(),
+    perform_once: false,
   },
   // Wheel Well Lights Off
   {
@@ -177,6 +185,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Taxi Lights
   {
@@ -189,6 +198,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Landing Lights On
   {
@@ -201,6 +211,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_112_73X",
@@ -212,6 +223,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_113_73X",
@@ -223,6 +235,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_114_73X",
@@ -234,6 +247,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Runway Turnoff Lights On
   {
@@ -246,6 +260,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_116_73X",
@@ -257,6 +272,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Transponder TA/RA
   {
@@ -269,6 +285,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Start Elapsed Timer
   {
@@ -281,6 +298,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
+    perform_once: true,
   },
   {
     var: "L:switch_529_73X",
@@ -292,6 +310,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
+    perform_once: true,
   },
   {
     var: "L:switch_321_73X",
@@ -303,6 +322,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
+    perform_once: true,
   },
   {
     var: "L:switch_530_73X",
@@ -314,6 +334,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
+    perform_once: true,
   },
 ];
 
@@ -327,7 +348,8 @@ run(() => {
       if (!command.enabled()) continue;
 
       let state = this.$api.variables.get(command.var, "number");
-      while (state !== command.desired_pos()) {
+      let retry = 3;
+      while (state !== command.desired_pos() && retry-- > 0) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -347,6 +369,7 @@ run(() => {
           }
         }
 
+        if (command.perform_once) break;
         state = this.$api.variables.get(command.var, "number");
       }
     }

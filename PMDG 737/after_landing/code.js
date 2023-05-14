@@ -61,6 +61,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay + 1500,
     enabled: () => this.store.enable_speedbrake,
+    perform_once: false,
   },
   // Flaps Up
   {
@@ -73,6 +74,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay + 5500,
     enabled: () => this.store.enable_flaps,
+    perform_once: false,
   },
   // Transponder Off
   {
@@ -85,6 +87,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Position Steady
   {
@@ -97,6 +100,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Landing Lights Off
   {
@@ -109,6 +113,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_112_73X",
@@ -120,6 +125,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_113_73X",
@@ -131,6 +137,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_114_73X",
@@ -142,6 +149,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Runway Turnoff Lights Off
   {
@@ -154,6 +162,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_116_73X",
@@ -165,6 +174,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Taxi Lights On
   {
@@ -177,6 +187,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // APU On
   {
@@ -189,6 +200,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: true,
   },
   // Probe Heat Off
   {
@@ -201,6 +213,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_141_73X",
@@ -212,6 +225,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Engine Start Switches Off/Auto
   {
@@ -224,6 +238,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   {
     var: "L:switch_121_73X",
@@ -235,6 +250,7 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Auto Brake Off
   {
@@ -247,6 +263,7 @@ const commandList = [
     interval_delay: 300,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
   },
   // Stop Elapsed Timer
   {
@@ -259,6 +276,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
+    perform_once: true,
   },
   {
     var: "L:switch_530_73X",
@@ -270,6 +288,7 @@ const commandList = [
     interval_delay: 0,
     delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
+    perform_once: true,
   },
 ];
 
@@ -283,7 +302,8 @@ run(() => {
       if (!command.enabled()) continue;
 
       let state = this.$api.variables.get(command.var, "number");
-      while (state !== command.desired_pos()) {
+      let retry = 3;
+      while (state !== command.desired_pos() && retry-- > 0) {
         let action = command.action;
         let repeatCount = 1;
         if (!action) {
@@ -303,11 +323,11 @@ run(() => {
           }
         }
 
+        if (command.perform_once) break;
         state = this.$api.variables.get(command.var, "number");
       }
     }
   })();
 
-  this.$api.command.script_message_send("737-auto-ll", "", (callback) => {});
   return false;
 });
