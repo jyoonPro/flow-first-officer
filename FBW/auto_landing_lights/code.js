@@ -119,6 +119,15 @@ const commandList = [
     enabled: () => isTargetOff || isDark(),
     perform_once: false,
   },
+  // Seatbelt Signs
+  {
+    var: "A:CABIN SEATBELTS ALERT SWITCH",
+    action: "K:CABIN_SEATBELTS_ALERT_SWITCH_TOGGLE",
+    desired_pos: () => 1,
+    delay: () => this.store.delay,
+    enabled: () => !isTargetOff,
+    perform_once: false,
+  },
 ];
 
 function timeout(ms) {

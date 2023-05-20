@@ -204,6 +204,19 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
+  // Seatbelt Signs
+  {
+    var: "L:switch_104_73X",
+    desired_pos: () => 100,
+    step: 50,
+    action: null,
+    incr: 10402,
+    decr: 10401,
+    interval_delay: 100,
+    delay: () => this.store.delay,
+    enabled: () => !isTargetOff,
+    perform_once: false,
+  },
 ];
 
 function timeout(ms) {

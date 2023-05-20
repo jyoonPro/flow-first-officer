@@ -119,6 +119,15 @@ const commandList = [
     enabled: () => isTargetOff || isDark(),
     perform_once: false,
   },
+  // Seatbelt Signs
+  {
+    var: "L:S_OH_SIGNS",
+    action: null,
+    desired_pos: () => 1,
+    delay: () => this.store.delay,
+    enabled: () => !isTargetOff,
+    perform_once: false,
+  },
 ];
 
 function timeout(ms) {

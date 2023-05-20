@@ -136,6 +136,15 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
+  // Seatbelt Signs
+  {
+    var: "L:A310_SEATBELTS_SWITCH",
+    action: null,
+    desired_pos: () => 1,
+    delay: () => this.store.delay,
+    enabled: () => !isTargetOff,
+    perform_once: false,
+  },
 ];
 
 function timeout(ms) {
