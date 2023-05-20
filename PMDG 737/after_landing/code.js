@@ -1,6 +1,7 @@
 this.store = {
   enable_speedbrake: false,
   enable_flaps: false,
+  turnoff_lights_off: true,
   stop_timer: true,
   delay: 600,
 };
@@ -23,6 +24,15 @@ settings_define({
     value: this.store.enable_flaps,
     changed: value => {
       this.store.enable_flaps = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
+  turnoff_lights_off: {
+    type: "checkbox",
+    label: "Turn runway turnoff lights off",
+    value: this.store.turnoff_lights_off,
+    changed: value => {
+      this.store.turnoff_lights_off = value;
       this.$api.datastore.export(this.store);
     },
   },
@@ -161,7 +171,7 @@ const commandList = [
     decr: 11501,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => true,
+    enabled: () => this.store.turnoff_lights_off,
     perform_once: false,
   },
   {

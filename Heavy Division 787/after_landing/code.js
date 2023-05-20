@@ -1,12 +1,22 @@
 this.store = {
 	enable_speedbrake: false,
 	enable_flaps: false,
+	turnoff_lights_off: true,
 	delay: 600,
 };
 
 this.$api.datastore.import(this.store);
 
 settings_define({
+	enable_speedbrake: {
+		type: "checkbox",
+		label: "Enable speedbrake retraction",
+		value: this.store.enable_speedbrake,
+		changed: value => {
+			this.store.enable_speedbrake = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
 	enable_flaps: {
 		type: "checkbox",
 		label: "Enable flaps retraction",
@@ -16,12 +26,12 @@ settings_define({
 			this.$api.datastore.export(this.store);
 		},
 	},
-	enable_speedbrake: {
+	turnoff_lights_off: {
 		type: "checkbox",
-		label: "Enable speedbrake retraction",
-		value: this.store.enable_speedbrake,
+		label: "Turn runway turnoff lights off",
+		value: this.store.turnoff_lights_off,
 		changed: value => {
-			this.store.enable_speedbrake = value;
+			this.store.turnoff_lights_off = value;
 			this.$api.datastore.export(this.store);
 		},
 	},
@@ -98,7 +108,7 @@ const commandList = [
 		action: () => "B:LIGHTING_TAXI_2_SET",
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
-		enabled: () => true,
+		enabled: () => this.store.turnoff_lights_off,
 		perform_once: false,
 	},
 	{
@@ -106,7 +116,7 @@ const commandList = [
 		action: () => "B:LIGHTING_TAXI_3_SET",
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
-		enabled: () => true,
+		enabled: () => this.store.turnoff_lights_off,
 		perform_once: false,
 	},
 	// Taxi Lights On
@@ -128,6 +138,14 @@ const commandList = [
 		perform_once: false,
 	},
 	// APU On
+	{
+		var: "L:XMLVAR_APU_StarterKnob_Pos",
+		action: () => null,
+		desired_pos: () => 1,
+		delay: () => this.store.delay,
+		enabled: () => true,
+		perform_once: false,
+	},
 	{
 		var: "L:XMLVAR_APU_StarterKnob_Pos",
 		action: () => null,

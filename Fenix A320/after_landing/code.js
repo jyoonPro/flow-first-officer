@@ -1,6 +1,8 @@
 this.store = {
 	enable_spoilers: false,
   enable_flaps: false,
+	turnoff_lights_off: true,
+	strobe_off: false,
   stop_timer: true,
 	delay: 600,
 };
@@ -26,6 +28,24 @@ settings_define({
 			this.$api.datastore.export(this.store);
 		},
   },
+	turnoff_lights_off: {
+		type: "checkbox",
+		label: "Turn runway turnoff lights off",
+		value: this.store.turnoff_lights_off,
+		changed: value => {
+			this.store.turnoff_lights_off = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
+	strobe_off: {
+		type: "checkbox",
+		label: "Turn strobe lights off instead of auto",
+		value: this.store.strobe_off,
+		changed: value => {
+			this.store.strobe_off = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
   stop_timer: {
     type: "checkbox",
     label: "Stop Elapsed Timer",
@@ -80,7 +100,7 @@ const commandList = [
 	{
 		var: "L:S_OH_EXT_LT_STROBE",
 		action: null,
-		desired_pos: () => 1,
+		desired_pos: () => this.store.strobe_off ? 0 : 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
 		perform_once: false,
@@ -117,7 +137,7 @@ const commandList = [
 		action: null,
 		desired_pos: () => 0,
 		delay: () => this.store.delay,
-		enabled: () => true,
+		enabled: () => this.store.turnoff_lights_off,
 		perform_once: false,
 	},
 	// APU Master On
