@@ -9,8 +9,6 @@ this.store = {
 
 this.$api.datastore.import(this.store);
 
-const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
-
 settings_define({
   enable_seatbelt: {
     type: "checkbox",
@@ -70,6 +68,8 @@ settings_define({
     },
   },
 });
+
+const isDark = () => this.$api.time.get_sun_position().altitudeDegrees < 5;
 
 const commandList = [
   // A/T Arm
