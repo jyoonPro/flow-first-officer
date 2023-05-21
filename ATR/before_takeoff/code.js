@@ -169,7 +169,7 @@ run(() => {
 });
 
 loop_15hz(() => {
-  if (!this.store.arm_yaw_damper) return;
+  if (!isYawDamperArmed) return;
 
   if (getRadarAltitude() > 50) {
     isYawDamperArmed = false;
