@@ -171,7 +171,7 @@ run(() => {
 loop_15hz(() => {
   if (!isYawDamperArmed) return;
 
-  if (getRadarAltitude() > 50) {
+  if (getRadarAltitude() > 100) {
     isYawDamperArmed = false;
 
     (async () => {
