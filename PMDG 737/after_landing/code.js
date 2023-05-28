@@ -140,11 +140,11 @@ const commandList = [
   {
     var: "L:switch_113_73X",
     desired_pos: () => 0,
-    step: 100,
+    step: 50,
     action: null,
     incr: 11302,
     decr: 11301,
-    interval_delay: 0,
+    interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
     perform_once: false,
@@ -152,11 +152,11 @@ const commandList = [
   {
     var: "L:switch_114_73X",
     desired_pos: () => 0,
-    step: 100,
+    step: 50,
     action: null,
     incr: 11402,
     decr: 11401,
-    interval_delay: 0,
+    interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
     perform_once: false,
@@ -321,20 +321,29 @@ run(() => {
           action = command.desired_pos() < state ? command.incr : command.decr;
         }
         for (let i = 1; i <= repeatCount; i++) {
-          this.$api.variables.set("K:ROTOR_BRAKE", "number", action);
-
           let delay = command.delay();
+
+          if (state === command.desired_pos()) {
+            if (delay > 0) {
+              await timeout(delay);
+            }
+            break;
+          }
+
           if (i < repeatCount && command.interval_delay > 0) {
             delay = command.interval_delay;
           }
 
+          this.$api.variables.set("K:ROTOR_BRAKE", "number", action);
+
           if (delay > 0) {
             await timeout(delay);
           }
+
+          state = this.$api.variables.get(command.var, "number");
         }
 
         if (command.perform_once) break;
-        state = this.$api.variables.get(command.var, "number");
       }
     }
   })();
