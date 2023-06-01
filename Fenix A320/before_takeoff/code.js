@@ -2,7 +2,9 @@ this.store = {
   enable_seatbelt: false,
   wing_lights: false,
   start_timer: true,
+  xpndr_on: true,
   tcas_ta_only: false,
+  packs_off: false,
   delay: 600,
 };
 
@@ -36,6 +38,15 @@ settings_define({
       this.$api.datastore.export(this.store);
       },
   },
+  xpndr_on: {
+    type: "checkbox",
+    label: "Turn transponder on instead of auto",
+    value: this.store.xpndr_on,
+    changed: value => {
+      this.store.xpndr_on = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
   tcas_ta_only: {
     type: "checkbox",
     label: "Set TCAS to TA Only",
@@ -44,6 +55,15 @@ settings_define({
       this.store.tcas_ta_only = value;
       this.$api.datastore.export(this.store);
       },
+  },
+  packs_off: {
+    type: "checkbox",
+    label: "Set packs off",
+    value: this.store.packs_off,
+    changed: value => {
+      this.store.packs_off = value;
+      this.$api.datastore.export(this.store);
+    },
   },
   delay: {
     type: "text",
@@ -83,7 +103,7 @@ const commandList = [
   {
     var: "L:S_XPDR_OPERATION",
     action: null,
-    desired_pos: () => 1,
+    desired_pos: () => this.store.xpndr_on ? 2 : 1,
     delay: () => this.store.delay,
     enabled: () => true,
     perform_once: false,
@@ -175,6 +195,8 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
+  // Packs Off
+  // TODO
   // Start Elapsed Timer
   {
     var: "L:S_MIP_CLOCK_ET",

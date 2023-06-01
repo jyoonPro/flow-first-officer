@@ -2,6 +2,7 @@ this.store = {
   enable_speedbrake: false,
   enable_flaps: false,
   turnoff_lights_off: true,
+  wing_lights_off: false,
   stop_timer: true,
   delay: 600,
 };
@@ -110,6 +111,19 @@ const commandList = [
     interval_delay: 100,
     delay: () => this.store.delay,
     enabled: () => true,
+    perform_once: false,
+  },
+  // Wing Lights
+  {
+    var: "L:switch_125_73X",
+    desired_pos: () => 0,
+    step: 100,
+    action: null,
+    incr: 12502,
+    decr: 12501,
+    interval_delay: 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.wing_lights_off,
     perform_once: false,
   },
   // Landing Lights Off

@@ -1,6 +1,7 @@
 this.store = {
   off_altitude: 9000,
   on_altitude: 11000,
+  wing_lights: false,
   delay: 600,
 };
 
@@ -29,6 +30,15 @@ settings_define({
         this.store.on_altitude = altitude;
         this.$api.datastore.export(this.store);
       }
+    },
+  },
+  wing_lights: {
+    type: "checkbox",
+    label: "Enable wing lights ON",
+    value: this.store.wing_lights,
+    changed: value => {
+      this.store.wing_lights = value;
+      this.$api.datastore.export(this.store);
     },
   },
   delay: {
@@ -176,7 +186,7 @@ const commandList = [
     decr: 12501,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => isTargetOff || isDark(),
+    enabled: () => isTargetOff || this.store.wing_lights || isDark(),
     perform_once: false,
   },
   // Engine

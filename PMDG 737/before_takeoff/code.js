@@ -4,6 +4,7 @@ this.store = {
   wing_lights: false,
   start_timer: true,
   tcas_ta_only: false,
+  packs_off: false,
   delay: 600,
 };
 
@@ -287,6 +288,8 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
+  // Packs Off
+  // TODO
   // Start Elapsed Timer
   {
     var: "L:switch_320_73X",

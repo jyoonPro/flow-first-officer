@@ -2,6 +2,7 @@ this.store = {
 	enable_speedbrake: false,
 	enable_flaps: false,
 	turnoff_lights_off: true,
+	wing_lights_off: false,
 	delay: 600,
 };
 
@@ -32,6 +33,15 @@ settings_define({
 		value: this.store.turnoff_lights_off,
 		changed: value => {
 			this.store.turnoff_lights_off = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
+	wing_lights_off: {
+		type: "checkbox",
+		label: "Turn wing lights off",
+		value: this.store.wing_lights_off,
+		changed: value => {
+			this.store.wing_lights_off = value;
 			this.$api.datastore.export(this.store);
 		},
 	},
@@ -126,6 +136,15 @@ const commandList = [
 		desired_pos: () => 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
+	},
+	// Wing Lights
+	{
+		var: "L:LIGHTING_WING_1",
+		action: () => "B:LIGHTING_WING_1_SET",
+		desired_pos: () => 0,
+		delay: () => this.store.delay,
+		enabled: () => this.store.wing_lights_off,
 		perform_once: false,
 	},
 	// Strobe Lights Off

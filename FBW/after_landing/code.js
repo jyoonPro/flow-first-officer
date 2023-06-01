@@ -2,6 +2,7 @@ this.store = {
 	enable_spoilers: false,
 	enable_flaps: false,
 	turnoff_lights_off: true,
+	wing_lights_off: false,
 	strobe_off: false,
   stop_timer: true,
 	delay: 600,
@@ -34,6 +35,15 @@ settings_define({
 		value: this.store.turnoff_lights_off,
 		changed: value => {
 			this.store.turnoff_lights_off = value;
+			this.$api.datastore.export(this.store);
+		},
+	},
+	wing_lights_off: {
+		type: "checkbox",
+		label: "Turn wing lights off",
+		value: this.store.wing_lights_off,
+		changed: value => {
+			this.store.wing_lights_off = value;
 			this.$api.datastore.export(this.store);
 		},
 	},
@@ -103,6 +113,15 @@ const commandList = [
 		desired_pos: () => this.store.strobe_off ? 2 : 1,
 		delay: () => this.store.delay,
 		enabled: () => true,
+		perform_once: false,
+	},
+	// Wing Lights
+	{
+		var: "A:LIGHT WING",
+		action: null,
+		desired_pos: () => 0,
+		delay: () => this.store.delay,
+		enabled: () => this.store.wing_lights_off,
 		perform_once: false,
 	},
 	// Landing Lights Off - Add both vars for Headwind compatibility
