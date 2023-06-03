@@ -37,6 +37,15 @@ settings_define({
       this.$api.datastore.export(this.store);
     },
   },
+  wing_lights_off: {
+    type: "checkbox",
+    label: "Turn wing lights off",
+    value: this.store.wing_lights_off,
+    changed: value => {
+      this.store.wing_lights_off = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
   stop_timer: {
     type: "checkbox",
     label: "Stop Elapsed Timer",

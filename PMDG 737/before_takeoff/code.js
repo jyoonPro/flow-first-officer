@@ -56,6 +56,15 @@ settings_define({
       this.$api.datastore.export(this.store);
     },
   },
+  packs_off: {
+    type: "checkbox",
+    label: "Set packs off",
+    value: this.store.packs_off,
+    changed: value => {
+      this.store.packs_off = value;
+      this.$api.datastore.export(this.store);
+    },
+  },
   delay: {
     type: "text",
     label: "Delay between actions (ms)",
@@ -289,7 +298,30 @@ const commandList = [
     perform_once: false,
   },
   // Packs Off
-  // TODO
+  {
+    var: "L:switch_200_73X",
+    desired_pos: () => 0,
+    step: 50,
+    action: null,
+    incr: 20002,
+    decr: 20001,
+    interval_delay: 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
+  {
+    var: "L:switch_201_73X",
+    desired_pos: () => 0,
+    step: 50,
+    action: null,
+    incr: 20102,
+    decr: 20101,
+    interval_delay: 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
   // Start Elapsed Timer
   {
     var: "L:switch_320_73X",

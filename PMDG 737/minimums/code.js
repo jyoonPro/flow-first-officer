@@ -93,7 +93,7 @@ scroll(cfg => {
   }
 });
 
-search(["minimums", "mins", "min", "baro", "radio"], (query, callback) => {
+search(["minimums", "mins", "min", "baro", "dh", "radio"], (query, callback) => {
   if (!query) return;
 
   const spl = query.split(" ");

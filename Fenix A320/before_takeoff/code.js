@@ -36,7 +36,7 @@ settings_define({
     changed: value => {
       this.store.start_timer = value;
       this.$api.datastore.export(this.store);
-      },
+    },
   },
   xpndr_on: {
     type: "checkbox",
@@ -54,7 +54,7 @@ settings_define({
     changed: value => {
       this.store.tcas_ta_only = value;
       this.$api.datastore.export(this.store);
-      },
+    },
   },
   packs_off: {
     type: "checkbox",
@@ -196,7 +196,22 @@ const commandList = [
     perform_once: false,
   },
   // Packs Off
-  // TODO
+  {
+    var: "L:S_OH_PNEUMATIC_PACK_1",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
+  {
+    var: "L:S_OH_PNEUMATIC_PACK_2",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
   // Start Elapsed Timer
   {
     var: "L:S_MIP_CLOCK_ET",
@@ -241,6 +256,7 @@ run(() => {
     }
   })();
 
-  this.$api.command.script_message_send("a320-fenix-auto-ll", "", (callback) => {});
+  this.$api.command.script_message_send("a320-fenix-auto-ll", "", (callback) => {
+  });
   return false;
 });

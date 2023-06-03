@@ -178,7 +178,22 @@ const commandList = [
     perform_once: false,
   },
   // Packs Off
-  // TODO
+  {
+    var: "L:A300_PACK1_BUTTON",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
+  {
+    var: "L:A300_PACK2_BUTTON",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
   // Start Elapsed Timer
   {
     var: "L:__CPT_CLOCK_RUNIsPressed",

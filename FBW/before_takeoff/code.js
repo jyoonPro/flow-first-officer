@@ -260,7 +260,22 @@ const commandList = [
     perform_once: false,
   },
   // Packs Off
-  // TODO
+  {
+    var: "L:A32NX_OVHD_COND_PACK_1_PB_IS_ON",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
+  {
+    var: "L:A32NX_OVHD_COND_PACK_2_PB_IS_ON",
+    action: null,
+    desired_pos: () => 0,
+    delay: () => this.store.delay,
+    enabled: () => this.store.packs_off,
+    perform_once: false,
+  },
   // Start Elapsed Timer
   {
     var: "L:A32NX_CHRONO_ET_SWITCH_POS",
