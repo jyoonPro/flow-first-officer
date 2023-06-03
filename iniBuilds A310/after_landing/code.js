@@ -89,6 +89,14 @@ const commandList = [
     enabled: () => this.store.enable_spoilers,
     perform_once: false,
   },
+  {
+    var: "L:A310_SPOILERS_ARMED",
+    action: "K:SPOILERS_ARM_SET",
+    desired_pos: () => 0,
+    delay: () => this.store.delay + 100,
+    enabled: () => this.store.enable_spoilers,
+    perform_once: false,
+  },
   // Flaps Up
   {
     var: "L:FLAPS_HANDLE_POSITION",
