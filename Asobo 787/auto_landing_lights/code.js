@@ -149,7 +149,7 @@ const commandList = [
   {
     var: "L:WT_SEAT_BELTS_MODE",
     action: null,
-    desired_pos: () => 1,
+    desired_pos: () => 2,
     delay: () => this.store.delay,
     enabled: () => !isTargetOff,
     perform_once: false,
