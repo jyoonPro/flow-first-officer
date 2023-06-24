@@ -69,6 +69,14 @@ const commandList = [
 		enabled: () => this.store.enable_speedbrake,
 		perform_once: false,
 	},
+	{
+		var: "A:SPOILERS ARMED",
+		action: "K:SPOILERS_ARM_OFF",
+		desired_pos: () => 0,
+		delay: () => this.store.delay,
+		enabled: () => this.store.enable_speedbrake,
+		perform_once: false,
+	},
 	// Flaps Up
 	{
 		var: "A:FLAPS HANDLE INDEX",
