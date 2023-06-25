@@ -62,18 +62,18 @@ settings_define({
 const commandList = [
 	// Speedbrake Retract
 	{
-		var: "L:WT_SPEEDBRAKE_LEVER_POS",
-		action: null,
+		var: null,
+		action: "K:SPOILERS_ARM_OFF",
 		desired_pos: () => 0,
-		delay: () => this.store.delay + 1000,
+		delay: () => 0,
 		enabled: () => this.store.enable_speedbrake,
 		perform_once: false,
 	},
 	{
-		var: "A:SPOILERS ARMED",
-		action: "K:SPOILERS_ARM_OFF",
+		var: "L:WT_SPEEDBRAKE_LEVER_POS",
+		action: "K:SPOILERS_OFF",
 		desired_pos: () => 0,
-		delay: () => this.store.delay,
+		delay: () => this.store.delay + 1000,
 		enabled: () => this.store.enable_speedbrake,
 		perform_once: false,
 	},
