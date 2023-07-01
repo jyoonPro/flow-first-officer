@@ -9,19 +9,22 @@ function timeout(ms) {
 
 const setMinimums = async (targetMinimums, isCaptainSide, isBaro, retry) => {
   if (isBaroSelected(isCaptainSide) !== isBaro) {
+    console.log(`Setting baro to ${isBaro ? "On" : "Off"}`)
     this.$api.variables.set(`B:INSTRUMENT_Knob_DH_MDA_SET_${isCaptainSide ? 1 : 2}_${isBaro ? "On" : "Off"}`, "number", isBaro ? 1 : 0);
     await timeout(100);
   }
 
   const minimums = isCaptainSide ? getLeftMinimums() : getRightMinimums();
-  const difference = targetMinimums - minimums;
+  let difference = targetMinimums - minimums;
+  if (isBaro) difference /= 10;
 
   this.$api.variables.set(`B:INSTRUMENT_Knob_DH_MDA_VALUE_${isCaptainSide ? 1 : 2}_Set`, "number", difference);
   this.$api.variables.set(`L:MSATR_DH_SET_${isCaptainSide ? 1 : 2}_DELTA`, "number", difference);
 
   // In case of frame/instruction drops
   await timeout(200);
-  if (isCaptainSide && getLeftMinimums() !== targetMinimums || !isCaptainSide && getRightMinimums() !== targetMinimums) setMinimums(targetMinimums, isCaptainSide, retry - 1);
+  if ((isCaptainSide && getLeftMinimums() !== targetMinimums || !isCaptainSide && getRightMinimums() !== targetMinimums) && retry > 0)
+    await setMinimums(targetMinimums, isCaptainSide, isBaro, retry - 1);
 };
 
 run(() => {
@@ -54,6 +57,7 @@ search(["minimums", "mins", "min", "baro", "mda", "da", "radio", "mdh", "dh"], (
     targetMinimums = Math.max(Math.min(targetMinimums, 19990), 0);
 
     if (spl[0] === "radio" || spl[0] === "mdh" || spl[0] === "dh") isBaro = false;
+    if (isBaro) targetMinimums = Math.round(targetMinimums / 10) * 10;
 
     const result = {
       uid: "mins_result",
