@@ -137,7 +137,7 @@ const commandList = [
   {
     var: "A:CIRCUIT SWITCH ON:17",
     action: null,
-    desired_pos: () => isTargetOff ? 0 : 1,
+    desired_pos: () => 0,
     delay: () => 0,
     enabled: () => true,
     perform_once: false,
@@ -145,7 +145,7 @@ const commandList = [
   {
     var: "A:CIRCUIT SWITCH ON:20",
     action: null,
-    desired_pos: () => 0,
+    desired_pos: () => isTargetOff ? 0 : 1,
     delay: () => 0,
     enabled: () => true,
     perform_once: false,
