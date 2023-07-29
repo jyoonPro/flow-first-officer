@@ -216,14 +216,6 @@ const commandList = [
   {
     var: "L:S_MIP_CLOCK_ET",
     action: null,
-    desired_pos: () => 2,
-    delay: () => this.store.delay + 1000,
-    enabled: () => this.store.start_timer,
-    perform_once: true,
-  },
-  {
-    var: "L:S_MIP_CLOCK_ET",
-    action: null,
     desired_pos: () => 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,

@@ -280,14 +280,6 @@ const commandList = [
   {
     var: "L:A32NX_CHRONO_ET_SWITCH_POS",
     action: null,
-    desired_pos: () => 2,
-    delay: () => this.store.delay + 1000,
-    enabled: () => this.store.start_timer,
-    perform_once: true,
-  },
-  {
-    var: "L:A32NX_CHRONO_ET_SWITCH_POS",
-    action: null,
     desired_pos: () => 0,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
