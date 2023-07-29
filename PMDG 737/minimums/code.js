@@ -93,7 +93,7 @@ scroll(cfg => {
   }
 });
 
-search(["minimums", "mins", "min", "baro", "mdh", "dh", "radio"], (query, callback) => {
+search(["minimums", "mins", "min", "baro", "mda", "da", "radio", "mdh", "dh"], (query, callback) => {
   if (!query) return;
 
   const spl = query.split(" ");
@@ -105,7 +105,7 @@ search(["minimums", "mins", "min", "baro", "mdh", "dh", "radio"], (query, callba
     else targetMinimums = Number(spl[1]);
     targetMinimums = Math.max(Math.min(targetMinimums, this.store.reset_rotation_count * 5), 0);
 
-    if (spl[0] === "radio") isBaro = false;
+    if (spl[0] === "radio" || spl[0] === "mdh" || spl[0] === "dh") isBaro = false;
 
     const result = {
       uid: "mins_result",
