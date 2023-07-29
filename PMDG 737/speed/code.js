@@ -35,7 +35,8 @@ const isMach = () => {
   const rawValue = this.$api.variables.get("L:ngx_SPDwindow", "number");
 
   // Altitude above FL260 OR speed window indicates mach value
-  return this.$api.variables.get("A:INDICATED ALTITUDE CALIBRATED", "feet") > 26000 || rawValue > 0 && rawValue < 1;
+  if (rawValue <= 0) return this.$api.variables.get("A:INDICATED ALTITUDE CALIBRATED", "feet") > 26000;
+  else return rawValue > 0 && rawValue < 1;
 }
 
 function timeout(ms) {
@@ -128,5 +129,7 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 });
 
 state(() => {
-  return isMach() ? "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") : "IAS<br/>" + (getSpeed() || "---");
+  return isMach() ?
+    "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") :
+    "IAS<br/>" + (getSpeed() || "---");
 });
