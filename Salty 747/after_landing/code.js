@@ -62,6 +62,14 @@ settings_define({
 const commandList = [
 	// Speedbrake Retract
 	{
+		var: null,
+		action: "K:SPOILERS_ARM_OFF",
+		desired_pos: () => 0,
+		delay: () => 0,
+		enabled: () => this.store.enable_speedbrake,
+		perform_once: false,
+	},
+	{
 		var: "A:SPOILERS HANDLE POSITION",
 		action: null,
 		desired_pos: () => 0,
