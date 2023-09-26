@@ -206,7 +206,7 @@ const commandList = [
     decr: 11601,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => true,
+    enabled: () => this.store.turnoff_lights_off,
     perform_once: false,
   },
   // Taxi Lights On
