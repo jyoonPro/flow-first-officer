@@ -12,7 +12,7 @@ this.$api.datastore.import(this.store);
 settings_define({
 	enable_seatbelt: {
 		type: "checkbox",
-		label: "Enable seatbelt signs check (Animations are INOP)",
+		label: "Enable seatbelt signs check",
 		value: this.store.enable_seatbelt,
 		changed: value => {
 			this.store.enable_seatbelt = value;
@@ -75,7 +75,7 @@ const commandList = [
 	// Seatbelt & Smoke Signs
 	{
 		var: "L:WT_SEAT_BELTS_MODE",
-		action: null,
+		action: "B:AIRLINER_Knob_Seatbelts_On",
 		desired_pos: () => 2,
 		delay: () => this.store.delay,
 		enabled: () => this.store.enable_seatbelt,

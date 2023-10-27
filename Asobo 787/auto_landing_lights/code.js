@@ -148,7 +148,7 @@ const commandList = [
   // Seatbelt Signs
   {
     var: "L:WT_SEAT_BELTS_MODE",
-    action: null,
+    action: "B:AIRLINER_Knob_Seatbelts_On",
     desired_pos: () => 2,
     delay: () => this.store.delay,
     enabled: () => !isTargetOff,
