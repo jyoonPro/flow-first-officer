@@ -262,7 +262,7 @@ run(() => {
     }
   })();
 
-  this.$api.command.script_message_send("a32n-ini-auto-ll", "", (callback) => {
+  this.$api.command.script_message_send("a20n-ini-auto-ll", "", (callback) => {
   });
   return false;
 });
