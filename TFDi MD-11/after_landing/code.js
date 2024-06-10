@@ -192,8 +192,11 @@ const commandList = [
   },
   // APU On
   {
-    var: () => "L:MD11_AOVHD_APU_ON_LT",
-    desired_pos: () => 1,
+    var: () => "L:MD11_APU_STATE",
+    desired_pos: () => {
+      const state = this.$api.variables.get("L:MD11_APU_STATE", "number");
+      return !state ? 1 : state;
+    },
     step: 0,
     action: () => 90144,
     incr: null,
