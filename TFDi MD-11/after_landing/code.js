@@ -218,6 +218,34 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
+  // Do this again due to bug in the plane
+  {
+    var: () => "L:MD11_APU_STATE",
+    desired_pos: () => {
+      const state = this.$api.variables.get("L:MD11_APU_STATE", "number");
+      return !state ? 1 : state;
+    },
+    step: 0,
+    action: () => 90144,
+    incr: null,
+    decr: null,
+    interval_delay: 0,
+    delay: () => 500,
+    enabled: () => true,
+    perform_once: true,
+  },
+  {
+    var: () => "L:MD11_OVHD_ELEC_APU_PWR_BT",
+    desired_pos: () => 0,
+    step: 0,
+    action: () => 90145,
+    incr: null,
+    decr: null,
+    interval_delay: 0,
+    delay: () => this.store.delay,
+    enabled: () => true,
+    perform_once: false,
+  },
   // Weather Radar Off
   {
     var: () => "L:MD11_PED_WXR_OFF_BT",

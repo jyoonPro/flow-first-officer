@@ -63,7 +63,7 @@ const setMcpCourse = async (targetCourse, isCaptainSide, retry) => {
 
   // In case of frame/instruction drops
   await timeout(200);
-  if (isCaptainSide && getLeftMcpCourse() !== targetCourse || !isCaptainSide && getRightMcpCourse() !== targetCourse) setMcpCourse(targetCourse, isCaptainSide, retry - 1);
+  if (isCaptainSide && getLeftMcpCourse() !== targetCourse || !isCaptainSide && getRightMcpCourse() !== targetCourse && retry > 0) setMcpCourse(targetCourse, isCaptainSide, retry - 1);
 }
 
 run(() => {
