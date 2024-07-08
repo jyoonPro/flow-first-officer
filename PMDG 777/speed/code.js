@@ -4,7 +4,7 @@ const getSpeed = () => {
     return 0;
   } else if (rawValue < 1) {
     // Mach
-    return Math.round(rawValue * 100) / 100;
+    return Math.round(rawValue * 1000) / 1000;
   } else {
     return Math.round(rawValue);
   }
@@ -25,9 +25,7 @@ function timeout(ms) {
 const setSpeed = async (targetSpeed, retry) => {
   const speed = getSpeed();
   // Multiply 100 first because of float precision
-  const difference = isMach() ? speed * 100 - targetSpeed * 100 : speed - targetSpeed;
-
-  console.log(difference);
+  const difference = isMach() ? speed * 1000 - targetSpeed * 1000 : speed - targetSpeed;
 
   if (difference < 0) {
     for (let i = 0; i < -difference; i++) {
@@ -64,8 +62,8 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 
     if (isMach()) {
       if (!spl[1] || spl[1].length === 0 || !Number.isFinite(Number(spl[1]))) targetSpeed = getSpeed();
-      else targetSpeed = Math.round(Number(spl[1]) * 100) / 100;
-      targetSpeed = Math.max(Math.min(targetSpeed, 0.95), 0.40);
+      else targetSpeed = Math.round(Number(spl[1]) * 1000) / 1000;
+      targetSpeed = Math.max(Math.min(targetSpeed, 0.950), 0.400);
     } else {
       if (!spl[1] || spl[1].length === 0 || !Number.isFinite(Number(spl[1]))) targetSpeed = getSpeed();
       else targetSpeed = Math.round(Number(spl[1]));
@@ -97,6 +95,6 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 
 state(() => {
   return isMach() ?
-    "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(2) : "-.--") :
+    "MACH<br/>" + (getSpeed() > 0 ? getSpeed().toFixed(3) : "-.---") :
     "IAS<br/>" + (getSpeed() || "---");
 });

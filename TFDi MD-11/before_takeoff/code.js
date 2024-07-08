@@ -2,7 +2,7 @@ this.store = {
   enable_seatbelt: false,
   nose_lights_land: false,
   tcas_ta_only: false,
-  wxr_mode: 0,
+  wxr_mode: 1,
   delay: 600,
 };
 

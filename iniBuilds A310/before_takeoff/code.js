@@ -30,7 +30,7 @@ settings_define({
   },
   start_timer: {
     type: "checkbox",
-    label: "Reset & Start Elapsed Timer",
+    label: "Start Elapsed Timer",
     value: this.store.start_timer,
     changed: value => {
       this.store.start_timer = value;

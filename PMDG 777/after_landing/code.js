@@ -248,6 +248,19 @@ const commandList = [
     enabled: () => this.store.stop_timer,
     perform_once: true,
   },
+  // Autobrake Off
+  {
+    var: "L:switch_292_a",
+    desired_pos: () => 10,
+    step: 10,
+    action: null,
+    incr: 29201,
+    decr: 29202,
+    interval_delay: 100,
+    delay: () => this.store.delay,
+    enabled: () => true,
+    perform_once: false,
+  },
 ];
 
 function timeout(ms) {

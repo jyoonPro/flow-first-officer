@@ -9,7 +9,6 @@ function timeout(ms) {
 
 const setMinimums = async (targetMinimums, isCaptainSide, isBaro, retry) => {
   if (isBaroSelected(isCaptainSide) !== isBaro) {
-    console.log(`Setting baro to ${isBaro ? "On" : "Off"}`)
     this.$api.variables.set(`B:INSTRUMENT_Knob_DH_MDA_SET_${isCaptainSide ? 1 : 2}_${isBaro ? "On" : "Off"}`, "number", isBaro ? 1 : 0);
     await timeout(100);
   }

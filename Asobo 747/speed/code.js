@@ -50,8 +50,6 @@ scroll(cfg => {
 search(["speed", "spd", "ias", "mach"], (query, callback) => {
   if (!query) return;
 
-  console.log(isMach());
-
   const spl = query.split(" ");
 
   if (spl.length > 0) {
