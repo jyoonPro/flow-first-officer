@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>PMDG 777</title>
+    <link rel="stylesheet" href="css/main.css"/>
+  </head>
+  <body>
+    <section class="hero is-info">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">PMDG 777</h1>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+          <ul>
+            <li><a href="./">Aircraft List</a></li>
+            <li><a href="">PMDG 777</a></li>
+          </ul>
+        </nav>
+        <h1 class="title is-5">Before Takeoff</h1>
+        <table class="table is-bordered is-striped is-hoverable">
+          <tbody>
+          <tr>
+            <td>A/T</td>
+            <td>Arm L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>No Smoking Sign</td>
+            <td>Auto</td>
+            <td>If "Enable seatbelt signs check" option set to true</td>
+          </tr>
+          <tr>
+            <td>Seat Belts Sign</td>
+            <td>On</td>
+            <td>If "Enable seatbelt signs check" option set to true</td>
+          </tr>
+          <tr>
+            <td>Logo Lights</td>
+            <td>On</td>
+            <td>If dark</td>
+          </tr>
+          <tr>
+            <td>Wing Lights</td>
+            <td>On</td>
+            <td>If "Enable wing lights ON" option set to true or is dark</td>
+          </tr>
+          <tr>
+            <td>Runway Turnoff Lights</td>
+            <td>On L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxi Lights</td>
+            <td>On or Off</td>
+            <td>On if "Taxi lights ON during takeoff" option set to true, otherwise off</td>
+          </tr>
+          <tr>
+            <td>Strobe Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Landing Lights</td>
+            <td>On L+C+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Transponder</td>
+            <td>TA/RA or TA</td>
+            <td>TA if "Set TCAS to TA Only" option set to true, otherwise TA/RA</td>
+          </tr>
+          <tr>
+            <td>Packs</td>
+            <td>Off</td>
+            <td>If "Set packs off" option set to true</td>
+          </tr>
+          <tr>
+            <td>Elapsed Timer</td>
+            <td>Start CPT+FO</td>
+            <td>If "Start Elapsed Timer" option set to true</td>
+          </tr>
+          <tr>
+            <td><span class="has-text-info">Auto Landing Lights</span></td>
+            <td><span class="has-text-info">Arm</span></td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">After Landing</h1>
+        <table class="table is-bordered is-striped is-hoverable">
+          <tbody>
+          <tr>
+            <td>Speed Brakes/Spoilers</td>
+            <td>Retract</td>
+            <td>If "Enable speedbrake retraction" option set to true</td>
+          </tr>
+          <tr>
+            <td>Flaps</td>
+            <td>Up</td>
+            <td>If "Enable flaps retraction" option set to true</td>
+          </tr>
+          <tr>
+            <td>Transponder</td>
+            <td>XPNDR</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Landing Lights</td>
+            <td>Off L+C+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Runway Turnoff Lights</td>
+            <td>Off L+R</td>
+            <td>If "Turn runway turnoff lights off" option set to true</td>
+          </tr>
+          <tr>
+            <td>Taxi Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Strobe Lights</td>
+            <td>Off</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Wing Lights</td>
+            <td>Off</td>
+            <td>If "Turn wing lights off" option set to true</td>
+          </tr>
+          <tr>
+            <td>APU</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Elapsed Timer</td>
+            <td>Stop CPT+FO</td>
+            <td>If "Stop Elapsed Timer" option set to true</td>
+          </tr>
+          <tr>
+            <td>Auto Brake</td>
+            <td>Off</td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">Auto Landing Lights</h1>
+        <ul>
+          <li>Automatically turn the landing lights and other lights off/on when passing through a certain altitude.</li>
+          <li>You must ARM it by clicking on the widget, and it will turn orange. Then, while the airplane crosses the specified altitude, the actions will be triggered accordingly.</li>
+          <li>Executing the Before Takeoff widget will arm this automatically. <b>Don't forget to arm it again before descending.</b></li>
+          <li>The altitude reported by MSFS might be different from the one shown on the PFD, so giving some margin is recommended.</li>
+        </ul>
+        <br>
+        <table class="table is-bordered is-striped is-hoverable">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Off (ascending)</th>
+            <th>On (descending)</th>
+            <th>Specified by "Lights off/on altitude"</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Landing Lights</td>
+            <td>Off L+C+R</td>
+            <td>On L+C+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Runway Turnoff Lights</td>
+            <td>Off L+R</td>
+            <td>On L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxi Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Logo Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td>If dark</td>
+          </tr>
+          <tr>
+            <td>Wing Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td>If "Enable wing lights ON" option set to true or is dark</td>
+          </tr>
+          <tr>
+            <td>Seat Belts Sign</td>
+            <td>No Change</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">Heading Sync</h1>
+
+        <ul>
+          <li>The widget shows the current actual heading when idle, and the MCP heading when scrolling.</li>
+          <li>Click on the widget to sync the MCP heading to the current heading.</li>
+          <li>Scroll on the widget to change the MCP heading.</li>
+          <li>Use OTTO to set the heading to a value. An example command would be "hdg 200".</li>
+        </ul>
+        <br>
+
+        <h1 class="title is-5">Set IAS</h1>
+
+        <ul>
+          <li>The widget shows the current IAS/Mach speed (or a blank value) shown on the MCP.</li>
+          <li>Scroll on the widget to change the MCP speed.</li>
+          <li>Use OTTO to set (and intervene) the speed to a value. Some example commands would be "spd 180", "ias 180 intv", "mach 0.82", "spd intv", etc.</li>
+        </ul>
+      </div>
+    </section>
+  </body>
+</html>

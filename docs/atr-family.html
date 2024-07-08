@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>ATR Family</title>
+    <link rel="stylesheet" href="css/main.css"/>
+  </head>
+  <body>
+    <section class="hero is-info">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">ATR 42/72-600</h1>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+          <ul>
+            <li><a href="./">Aircraft List</a></li>
+            <li><a href="">ATR Family</a></li>
+          </ul>
+        </nav>
+        <h1 class="title is-5">Before Takeoff</h1>
+        <table class="table is-bordered is-striped is-hoverable">
+          <tbody>
+          <tr>
+            <td>Seat Belts Sign</td>
+            <td>On</td>
+            <td>If "Enable seatbelt signs check" option set to true</td>
+          </tr>
+          <tr>
+            <td>No Device Sign</td>
+            <td>On</td>
+            <td>If "Enable seatbelt signs check" option set to true</td>
+          </tr>
+          <tr>
+            <td>Gust Lock</td>
+            <td>Released</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Weather Radar</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Wing Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxi & TO Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Landing Lights</td>
+            <td>On L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Logo Lights</td>
+            <td>On</td>
+            <td>If dark</td>
+          </tr>
+          <tr>
+            <td>Strobe Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="has-text-info">Yaw Damper</span></td>
+            <td><span class="has-text-info">Arm</span></td>
+            <td>If "Automatically engage yaw damper (YD) after takeoff" option set to true</td>
+          </tr>
+          <tr>
+            <td><span class="has-text-info">Auto Landing Lights</span></td>
+            <td><span class="has-text-info">Arm</span></td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">After Landing</h1>
+        <table class="table is-bordered is-striped is-hoverable">
+          <tbody>
+          <tr>
+            <td>Chronograph</td>
+            <td>Start</td>
+            <td>If "Start chronograph" option set to true</td>
+          </tr>
+          <tr>
+            <td>Flaps</td>
+            <td>Up</td>
+            <td>If "Enable flaps retraction" option set to true</td>
+          </tr>
+          <tr>
+            <td>Gust Lock</td>
+            <td>Engaged</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Weather Radar</td>
+            <td>STBY</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Landing Lights</td>
+            <td>Off L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxi & TO Lights</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Strobe Lights</td>
+            <td>Off</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Probe Heats</td>
+            <td>Off CPT+FO+STBY</td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">Auto Landing Lights</h1>
+        <ul>
+          <li>Automatically turn the landing lights and other lights off/on when passing through a certain altitude.</li>
+          <li>You must ARM it by clicking on the widget, and it will turn orange. Then, while the airplane crosses the specified altitude, the actions will be triggered accordingly.</li>
+          <li>Executing the Before Takeoff widget will arm this automatically. <b>Don't forget to arm it again before descending.</b></li>
+          <li>The altitude reported by MSFS might be different from the one shown on the PFD, so giving some margin is recommended.</li>
+        </ul>
+        <br>
+        <table class="table is-bordered is-striped is-hoverable">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Off (ascending)</th>
+            <th>On (descending)</th>
+            <th>Specified by "Lights off/on altitude"</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Landing Lights</td>
+            <td>Off L+R</td>
+            <td>On L+R</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxi & TO Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Wing Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Logo Lights</td>
+            <td>Off</td>
+            <td>On</td>
+            <td>If dark</td>
+          </tr>
+          <tr>
+            <td>Seat Belts Sign</td>
+            <td>No Change</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>No Device Sign</td>
+            <td>No Change</td>
+            <td>On</td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <h1 class="title is-5">Set Altitude</h1>
+
+        <ul>
+          <li>The widget shows the current MCP altitude.</li>
+          <li>Scroll on the widget to change the MCP altitude.</li>
+          <li>Use OTTO to set (and intervene) the altitude to a value. Some example commands would be "alt 3000", "fl 320", "fl 200 intv", "alt intv", etc.</li>
+        </ul>
+        <br>
+
+        <h1 class="title is-5">Set Minimums</h1>
+
+        <ul>
+          <li>Scroll on the widget to change the minimums value.</li>
+          <li>Use OTTO to set the minimums to a value. Some example commands would be "mins 200", "baro 360", "radio 200", "mda 240", etc.</li>
+        </ul>
+        <br>
+      </div>
+    </section>
+  </body>
+</html>
