@@ -120,15 +120,6 @@ const commandList = [
     enabled: () => isTargetOff || this.store.wing_lights || isDark(),
     perform_once: false,
   },
-  // Logo Lights
-  {
-    var: "L:INI_LOGO_LIGHT_SWITCH",
-    action: null,
-    desired_pos: () => isTargetOff ? 1 : 0,
-    delay: () => this.store.delay,
-    enabled: () => isTargetOff || isDark(),
-    perform_once: false,
-  },
   // Seatbelt Signs
   {
     var: "L:INI_SEATBELTS_SWITCH",

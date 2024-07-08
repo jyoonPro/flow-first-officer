@@ -176,15 +176,6 @@ const commandList = [
     enabled: () => isTargetOff || this.store.wing_lights || isDark(),
     perform_once: false,
   },
-  // Logo Lights
-  {
-    var: "A:LIGHT LOGO",
-    action: null,
-    desired_pos: () => isTargetOff ? 0 : 1,
-    delay: () => this.store.delay,
-    enabled: () => isTargetOff || isDark(),
-    perform_once: false,
-  },
   // Seatbelt Signs
   {
     var: "A:CABIN SEATBELTS ALERT SWITCH",

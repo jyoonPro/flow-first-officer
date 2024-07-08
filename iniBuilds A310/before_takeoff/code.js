@@ -163,7 +163,10 @@ const commandList = [
   {
     var: "L:A310_NAV_LOGO_LIGHT_SWITCH",
     action: null,
-    desired_pos: () => isDark() ? 0 : 1,
+    desired_pos: () => {
+      const current_pos = this.$api.variables.get("L:A310_NAV_LOGO_LIGHT_SWITCH", "number");
+      return current_pos === 2 ? 0 : current_pos;
+    },
     delay: () => this.store.delay,
     enabled: () => true,
     perform_once: false,

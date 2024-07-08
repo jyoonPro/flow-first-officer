@@ -155,7 +155,10 @@ const commandList = [
   {
     var: "L:S_OH_EXT_LT_NAV_LOGO",
     action: null,
-    desired_pos: () => isDark() ? 2 : 1,
+    desired_pos: () => {
+      const current_pos = this.$api.variables.get("L:S_OH_EXT_LT_NAV_LOGO", "number");
+      return current_pos === 0 ? 2 : current_pos;
+    },
     delay: () => this.store.delay,
     enabled: () => true,
     perform_once: false,

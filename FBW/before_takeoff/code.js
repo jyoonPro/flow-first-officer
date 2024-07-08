@@ -165,7 +165,7 @@ const commandList = [
     action: null,
     desired_pos: () => 1,
     delay: () => this.store.delay,
-    enabled: () => isDark(),
+    enabled: () => true,
     perform_once: false,
   },
   // Landing Lights On

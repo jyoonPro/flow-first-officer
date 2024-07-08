@@ -128,15 +128,6 @@ const commandList = [
     enabled: () => isTargetOff || this.store.wing_lights || isDark(),
     perform_once: false,
   },
-  // Logo Lights
-  {
-    var: "L:INI_NAV_LOGO_LIGHT_SWITCH",
-    action: null,
-    desired_pos: () => isTargetOff ? 1 : 0,
-    delay: () => this.store.delay,
-    enabled: () => isTargetOff || isDark(),
-    perform_once: false,
-  },
   // Engine
   {
     var: "L:INI_ENG_IGNITION_SWITCH",
