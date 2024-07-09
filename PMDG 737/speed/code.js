@@ -94,8 +94,12 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
 
   if (spl.length > 0) {
     let targetSpeed, isSpeedIntv;
+    let isTargetMach = isMach();
 
-    if (isMach()) {
+    if (spl[0] === "mach") isTargetMach = true;
+    else if (spl[0] === "ias") isTargetMach = false;
+
+    if (isTargetMach) {
       if (!spl[1] || spl[1].length === 0 || !Number.isFinite(Number(spl[1]))) targetSpeed = getSpeed();
       else targetSpeed = Math.round(Number(spl[1]) * 100) / 100;
       targetSpeed = Math.max(Math.min(targetSpeed, 0.82), 0.60);
@@ -110,13 +114,21 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
     const result = {
       uid: "mcp_speed_result",
       label: "",
-      subtext: (isMach() ? "Set MACH to " : "Set IAS to ") + targetSpeed + (isSpeedIntv ? " SPD INTV" : ""),
+      subtext: !isSpeedIntv && getSpeed() === 0 ? `Activate speed window first or type "${spl[0]} ${spl[1]} intv" to intervene` : ((isTargetMach ? "Set MACH to " : "Set IAS to ") + targetSpeed + (isSpeedIntv ? " SPD INTV" : "")),
       is_note: true,
       execute: () => {
+        if (!isSpeedIntv && getSpeed() === 0) return;
+
         (async () => {
           if (isSpeedIntv) {
-            this.$api.variables.set("K:ROTOR_BRAKE", "number", 38701);
-            await timeout(100);
+            this.$api.variables.set("K:ROTOR_BRAKE", "number", 210001);
+            await timeout(1500);
+
+            // Switch IAS/Mach if units are different
+            if (isTargetMach !== isMach()) {
+              this.$api.variables.set("K:ROTOR_BRAKE", "number", 38301);
+              await timeout(1500);
+            }
           }
           await setSpeed(targetSpeed, 3);
         })();
