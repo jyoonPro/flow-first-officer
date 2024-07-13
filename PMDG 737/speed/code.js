@@ -123,13 +123,17 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
           if (isSpeedIntv) {
             this.$api.variables.set("K:ROTOR_BRAKE", "number", 210001);
             await timeout(1500);
-
-            // Switch IAS/Mach if units are different
-            if (isTargetMach !== isMach()) {
-              this.$api.variables.set("K:ROTOR_BRAKE", "number", 38301);
-              await timeout(1500);
-            }
           }
+
+          // Switch IAS/Mach if units are different
+          if (isTargetMach !== isMach()) {
+            this.$api.variables.set("K:ROTOR_BRAKE", "number", 38301);
+            await timeout(1500);
+          }
+
+          // Abort if units are still different
+          if (isTargetMach !== isMach()) return;
+
           await setSpeed(targetSpeed, 3);
         })();
         this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);

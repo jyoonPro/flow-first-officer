@@ -13,7 +13,7 @@ const getSpeed = () => {
 const isMach = () => {
   const rawValue = this.$api.variables.get("L:ngx_SPDwindow", "number");
 
-  // Altitude above FL260 OR speed window indicates mach value
+  // Altitude above FL310 OR speed window indicates mach value
   if (rawValue <= 0) return this.$api.variables.get("A:INDICATED ALTITUDE CALIBRATED", "feet") > 31000;
   else return rawValue > 0 && rawValue < 1;
 }
@@ -88,13 +88,17 @@ search(["speed", "spd", "ias", "mach"], (query, callback) => {
           if (isSpeedIntv) {
             this.$api.variables.set("K:ROTOR_BRAKE", "number", 210001);
             await timeout(1500);
-
-            // Switch IAS/Mach if units are different
-            if (isTargetMach !== isMach()) {
-              this.$api.variables.set("K:ROTOR_BRAKE", "number", 20801);
-              await timeout(1500);
-            }
           }
+
+          // Switch IAS/Mach if units are different
+          if (isTargetMach !== isMach()) {
+            this.$api.variables.set("K:ROTOR_BRAKE", "number", 20801);
+            await timeout(1500);
+          }
+
+          // Abort if units are still different
+          if (isTargetMach !== isMach()) return;
+
           await setSpeed(targetSpeed, 3);
         })();
         this.$api.variables.set("L:P42_FLOW_SET_OTTO", "number", 0);
