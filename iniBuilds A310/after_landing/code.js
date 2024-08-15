@@ -225,17 +225,17 @@ const commandList = [
     var: "L:__CPT_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON",
     desired_pos: () => 1,
-    delay: () => this.store.delay + 1500,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
-    perform_once: false,
+    perform_once: true,
   },
   {
     var: "L:__FO_CLOCK_RUNIsPressed",
     action: "L:A310_ET_TOGGLE_BUTTON_FO",
     desired_pos: () => 1,
-    delay: () => this.store.delay + 1500,
+    delay: () => this.store.delay,
     enabled: () => this.store.stop_timer,
-    perform_once: false,
+    perform_once: true,
   },
 ];
 
