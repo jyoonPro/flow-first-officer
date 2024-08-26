@@ -199,17 +199,17 @@ const commandList = [
   },
   // Start Elapsed Timer
   {
-    var: "L:__CPT_CLOCK_RUNIsPressed",
+    var: null,
     action: "L:A310_ET_TOGGLE_BUTTON",
-    desired_pos: (isAction) => isAction ? 1 : 0,
+    desired_pos: () => 1,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
     perform_once: true,
   },
   {
-    var: "L:__FO_CLOCK_RUNIsPressed",
+    var: null,
     action: "L:A310_ET_TOGGLE_BUTTON_FO",
-    desired_pos: (isAction) => isAction ? 1 : 0,
+    desired_pos: () => 1,
     delay: () => this.store.delay,
     enabled: () => this.store.start_timer,
     perform_once: true,

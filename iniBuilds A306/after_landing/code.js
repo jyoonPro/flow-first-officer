@@ -222,7 +222,7 @@ const commandList = [
   },
   // Stop Elapsed Timer
   {
-    var: "L:__CPT_CLOCK_RUNIsPressed",
+    var: null,
     action: "L:INI_ET_TOGGLE_BUTTON",
     desired_pos: () => 1,
     delay: () => this.store.delay,
@@ -230,7 +230,7 @@ const commandList = [
     perform_once: true,
   },
   {
-    var: "L:__FO_CLOCK_RUNIsPressed",
+    var: null,
     action: "L:INI_ET_TOGGLE_BUTTON_FO",
     desired_pos: () => 1,
     delay: () => this.store.delay,
