@@ -181,7 +181,7 @@ const commandList = [
     decr: 22,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => true,
+    enabled: () => this.store.turnoff_lights_off,
     perform_once: false,
   },
   {
@@ -194,7 +194,7 @@ const commandList = [
     decr: 24,
     interval_delay: 0,
     delay: () => this.store.delay,
-    enabled: () => true,
+    enabled: () => this.store.turnoff_lights_off,
     perform_once: false,
   },
   // Taxi Lights On
