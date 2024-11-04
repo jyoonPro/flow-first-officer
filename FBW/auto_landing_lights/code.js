@@ -128,25 +128,9 @@ const commandList = [
   // Nose Light
   {
     var: "L:LIGHTING_LANDING_1",
-    action: null,
+    action: "B:LIGHTING_LANDING_1_Set",
     desired_pos: () => isTargetOff ? 2 : 1,
     delay: () => this.store.delay,
-    enabled: () => true,
-    perform_once: false,
-  },
-  {
-    var: "A:CIRCUIT SWITCH ON:17",
-    action: null,
-    desired_pos: () => 0,
-    delay: () => 0,
-    enabled: () => true,
-    perform_once: false,
-  },
-  {
-    var: "A:CIRCUIT SWITCH ON:20",
-    action: null,
-    desired_pos: () => isTargetOff ? 0 : 1,
-    delay: () => 0,
     enabled: () => true,
     perform_once: false,
   },
