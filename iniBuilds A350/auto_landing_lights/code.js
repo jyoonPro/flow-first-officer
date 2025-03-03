@@ -94,15 +94,6 @@ const commandList = [
     enabled: () => true,
     perform_once: false,
   },
-  // Runway Turnoff Lights
-  {
-    var: "L:INI_TURNOFF_LIGHT_SWITCH",
-    action: null,
-    desired_pos: () => isTargetOff ? 0 : 1,
-    delay: () => this.store.delay,
-    enabled: () => true,
-    perform_once: false,
-  },
   // Wing Lights
   {
     var: "L:INI_LIGHTS_WING",
